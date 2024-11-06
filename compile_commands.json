@@ -1,0 +1,32 @@
+[
+{
+  "directory": "/home/ZhangMingkun/Labs/cg/ray_tracer/build",
+  "command": "/usr/bin/c++  -I/home/ZhangMingkun/Labs/cg/ray_tracer/include -g -std=gnu++11 -o CMakeFiles/vector3d_tester.dir/vector3d_tester.cpp.o -c /home/ZhangMingkun/Labs/cg/ray_tracer/vector3d_tester.cpp",
+  "file": "/home/ZhangMingkun/Labs/cg/ray_tracer/vector3d_tester.cpp",
+  "output": "CMakeFiles/vector3d_tester.dir/vector3d_tester.cpp.o"
+},
+{
+  "directory": "/home/ZhangMingkun/Labs/cg/ray_tracer/build",
+  "command": "/usr/bin/c++  -I/home/ZhangMingkun/Labs/cg/ray_tracer/include -g -std=gnu++11 -o CMakeFiles/vector3d_tester.dir/vector3d.cpp.o -c /home/ZhangMingkun/Labs/cg/ray_tracer/vector3d.cpp",
+  "file": "/home/ZhangMingkun/Labs/cg/ray_tracer/vector3d.cpp",
+  "output": "CMakeFiles/vector3d_tester.dir/vector3d.cpp.o"
+},
+{
+  "directory": "/home/ZhangMingkun/Labs/cg/ray_tracer/build",
+  "command": "/usr/bin/c++  -I/home/ZhangMingkun/Labs/cg/ray_tracer/include -g -std=gnu++11 -o CMakeFiles/ray_tracer.dir/main.cpp.o -c /home/ZhangMingkun/Labs/cg/ray_tracer/main.cpp",
+  "file": "/home/ZhangMingkun/Labs/cg/ray_tracer/main.cpp",
+  "output": "CMakeFiles/ray_tracer.dir/main.cpp.o"
+},
+{
+  "directory": "/home/ZhangMingkun/Labs/cg/ray_tracer/build",
+  "command": "/usr/bin/c++  -I/home/ZhangMingkun/Labs/cg/ray_tracer/include -g -std=gnu++11 -o CMakeFiles/ray_tracer.dir/image.cpp.o -c /home/ZhangMingkun/Labs/cg/ray_tracer/image.cpp",
+  "file": "/home/ZhangMingkun/Labs/cg/ray_tracer/image.cpp",
+  "output": "CMakeFiles/ray_tracer.dir/image.cpp.o"
+},
+{
+  "directory": "/home/ZhangMingkun/Labs/cg/ray_tracer/build",
+  "command": "/usr/bin/c++  -I/home/ZhangMingkun/Labs/cg/ray_tracer/include -g -std=gnu++11 -o CMakeFiles/ray_tracer.dir/color.cpp.o -c /home/ZhangMingkun/Labs/cg/ray_tracer/color.cpp",
+  "file": "/home/ZhangMingkun/Labs/cg/ray_tracer/color.cpp",
+  "output": "CMakeFiles/ray_tracer.dir/color.cpp.o"
+}
+]

@@ -1,4 +1,5 @@
 #include <SDL2/SDL.h>
+#include <SDL2/SDL_keycode.h>
 #include <vector>
 #include <string>
 #include <sstream>
@@ -37,6 +38,12 @@ void handle_events() {
                 case SDLK_d:
                     key_char = 'd';
                     break;
+                case SDLK_q:
+                    key_char = 'q';
+                    break;
+                case SDLK_e:
+                    key_char = 'e';
+                    break;
                 default:
                     break;
             }
@@ -74,7 +81,7 @@ int main(int argc, char* argv[]) {
     std::vector<std::string> args(argv, argv + argc);
 
 
-    Camera camera(16.0 / 9.0, 600);
+    Camera camera(16.0 / 9.0, 200);
     camera.render();
 
 
@@ -100,11 +107,11 @@ int main(int argc, char* argv[]) {
 
         switch (toupper(key)) {
             case 'W':
-                camera.translate(Direction(0, 0, 0.3));
+                camera.translate(Direction(0, 0, -0.3));
                 camera_moved = true;
                 break;
             case 'S':
-                camera.translate(Direction(0, 0, -0.3));
+                camera.translate(Direction(0, 0, 0.3));
                 camera_moved = true;
                 break;
             case 'A':
@@ -113,6 +120,14 @@ int main(int argc, char* argv[]) {
                 break;
             case 'D':
                 camera.translate(Direction(0.3, 0, 0));
+                camera_moved = true;
+                break;
+            case 'Q':
+                camera.translate(Direction(0, 0.3, 0));
+                camera_moved = true;
+                break;
+            case 'E':
+                camera.translate(Direction(0, -0.3, 0));
                 camera_moved = true;
                 break;
             default:

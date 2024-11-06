@@ -28,8 +28,8 @@ private:
     Direction viewport_u;
     Direction viewport_v;
 
-    double pixel_delta_u;
-    double pixel_delta_v;
+    Direction pixel_delta_u;
+    Direction pixel_delta_v;
 
     Pointer viewport_upper_left;
     Pointer viewport_lower_left;
@@ -38,11 +38,10 @@ private:
 
     Image image;
 
-    int samples_per_pixel = 20;
-    int max_depth = 100;
+    int samples_per_pixel = 10;
+    int max_depth = 20;
 
     RandomGenerator random_generator;
-
 public:
 
     Camera(double aspect_ratio, int image_width);

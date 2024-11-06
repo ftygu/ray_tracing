@@ -8,6 +8,7 @@
 #include "random_generator.hpp"
 #include "vector3d.hpp"
 #include "sphere.hpp"
+#include <iostream>
 
 Camera::Camera(double aspect_ratio, int image_width) : aspect_ratio(aspect_ratio), image_width(image_width)
 {
@@ -22,14 +23,14 @@ Camera::Camera(double aspect_ratio, int image_width) : aspect_ratio(aspect_ratio
     viewport_u = Direction(viewport_width, 0, 0);
     viewport_v = Direction(0, -viewport_height, 0);
 
-    pixel_delta_u = viewport_width / image_width;
-    pixel_delta_v = viewport_height / image_height;
+    pixel_delta_u = viewport_u / image_width;
+    pixel_delta_v = viewport_v / image_height;
 
     viewport_upper_left = center - Direction(0, 0, focal_length) - viewport_u / 2 - viewport_v / 2;
 
     viewport_lower_left = center - Direction(0, 0, focal_length) + viewport_u / 2 + viewport_v / 2;
 
-    pixel00_center = viewport_upper_left + Direction(pixel_delta_u / 2, pixel_delta_v / 2, 0);
+    pixel00_center = viewport_upper_left + pixel_delta_u / 2 + pixel_delta_v / 2;
 
     image = Image(image_width, image_height);
 };
@@ -39,22 +40,15 @@ void Camera::translate(const Direction &translation)
     center = center + translation;
     viewport_upper_left = center - Direction(0, 0, focal_length) - viewport_u / 2 - viewport_v / 2;
     viewport_lower_left = center - Direction(0, 0, focal_length) + viewport_u / 2 + viewport_v / 2;
-    pixel00_center = viewport_upper_left + Direction(pixel_delta_u / 2, pixel_delta_v / 2, 0);
-}
-
-void Camera::set_position(const Pointer &position)
-{
-    center = position;
-    viewport_upper_left = center - Direction(0, 0, focal_length) - viewport_u / 2 - viewport_v / 2;
-    viewport_lower_left = center - Direction(0, 0, focal_length) + viewport_u / 2 + viewport_v / 2;
-    pixel00_center = viewport_upper_left + Direction(pixel_delta_u / 2, pixel_delta_v / 2, 0);
+    pixel00_center = viewport_upper_left + pixel_delta_u / 2 + pixel_delta_v / 2;
+    std::clog << "Camera position: " << center.x() << ", " << center.y() << ", " << center.z() << '\n';
 }
 
 void Camera::set_direction(const Direction &direction)
 {
     viewport_upper_left = center - Direction(0, 0, focal_length) - viewport_u / 2 - viewport_v / 2;
     viewport_lower_left = center - Direction(0, 0, focal_length) + viewport_u / 2 + viewport_v / 2;
-    pixel00_center = viewport_upper_left + Direction(pixel_delta_u / 2, pixel_delta_v / 2, 0);
+    pixel00_center = viewport_upper_left + pixel_delta_u / 2 + pixel_delta_v / 2;
 }
 
 void Camera::render()
@@ -70,13 +64,13 @@ void Camera::render()
     auto sphere1 
         = std::make_shared<Sphere>(Pointer(0, -100000, -1), 99999.5, material1);
     auto sphere2 
-        = std::make_shared<Sphere>(Pointer(0, 0, 2), 0.5, material2);
+        = std::make_shared<Sphere>(Pointer(0, 0, -2), 0.5, material2);
     auto sphere3 
-        = std::make_shared<Sphere>(Pointer(-2, 0, 2), 0.5, material3);
+        = std::make_shared<Sphere>(Pointer(-2, 0, -2), 0.5, material3);
     auto sphere4 
-        = std::make_shared<Sphere>(Pointer(2, 0, 2), 0.5, material4);
+        = std::make_shared<Sphere>(Pointer(2, 0, -2), 0.5, material4);
     auto sphere5 
-        = std::make_shared<Sphere>(Pointer(-0.5, 0, 1), 0.5, material5);
+        = std::make_shared<Sphere>(Pointer(-0.5, 0, -1), 0.5, material5);
     world.add(sphere1);
     world.add(sphere2);
     world.add(sphere3);
@@ -84,20 +78,17 @@ void Camera::render()
     world.add(sphere5);
     for (int j = 0; j < image_height; ++j)
     {
-        std::clog << "Scanlines remaining: " << image_height - j << '\n';
+        //std::clog << "Scanlines remaining: " << image_height - j << '\n';
         for (int i = 0; i < image_width; ++i)
         {
-            double u = pixel00_center.x() + i * pixel_delta_u + pixel_delta_u / 2;
-            double v = pixel00_center.y() - j * pixel_delta_v + pixel_delta_v / 2;
-            Pointer p = Pointer(u, v, focal_length);
+            auto p = pixel00_center + pixel_delta_u * i + pixel_delta_v * j;
 
             Color pixel_color(0, 0, 0);
 
             for (int s = 0; s < samples_per_pixel; ++s)
             {
-                auto random_point = random_generator.sample_point_square(p, pixel_delta_u / 2, RandomGenerator::Z);
+                auto random_point = random_generator.sample_point_square(p, 0.01, RandomGenerator::Z);
                 Direction direction = Direction(random_point - center).unit();
-
                 Ray ray(center, direction);
 
                 pixel_color = pixel_color + ray_color(ray, max_depth, world);

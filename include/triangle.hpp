@@ -8,12 +8,12 @@
 class Triangle : public Hittable
 {
 private:
-    Pointer v0;
-    Pointer v1;
-    Pointer v2;
+    Point v0;
+    Point v1;
+    Point v2;
     std::shared_ptr<Material> material;
 public:
-    Triangle(const Pointer &v0, const Pointer &v1, const Pointer &v2, std::shared_ptr<Material> material);
+    Triangle(const Point &v0, const Point &v1, const Point &v2, std::shared_ptr<Material> material);
 
     bool hit(const Ray &ray, double t_min, double t_max, HitRecord &rec) const override;
 };

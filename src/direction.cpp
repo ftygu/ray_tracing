@@ -60,14 +60,14 @@ Direction Direction::operator-(const Direction &d) const
     return Direction(vector - d.vector);
 }
 
-Pointer Direction::operator+(const Pointer &p) const
+Point Direction::operator+(const Point &p) const
 {
-    return Pointer(p.x() + vector[0], p.y() + vector[1], p.z() + vector[2]);
+    return Point(p.x() + vector[0], p.y() + vector[1], p.z() + vector[2]);
 }
 
-Pointer Direction::operator-(const Pointer &p) const
+Point Direction::operator-(const Point &p) const
 {
-    return Pointer(p.x() - vector[0], p.y() - vector[1], p.z() - vector[2]);
+    return Point(p.x() - vector[0], p.y() - vector[1], p.z() - vector[2]);
 }
 
 Direction Direction::operator*(double t) const

@@ -2,7 +2,7 @@
 
 #include "vector3d.hpp"
 
-class Pointer;
+class Point;
 
 class Direction
 {
@@ -31,8 +31,8 @@ public:
     Direction operator+(const Direction &d) const;
     Direction operator-(const Direction &d) const;
 
-    Pointer operator+(const Pointer &p) const;
-    Pointer operator-(const Pointer &p) const;
+    Point operator+(const Point &p) const;
+    Point operator-(const Point &p) const;
 
     Direction operator*(double t) const;
     Direction operator/(double t) const;

@@ -1,38 +1,38 @@
 #include "point.hpp"
 #include "direction.hpp"
 
-Pointer::Pointer() : vector(Vector3d()) {}
+Point::Point() : vector(Vector3d()) {}
 
-Pointer::Pointer(double x, double y, double z) : vector(Vector3d(x, y, z)) {}
+Point::Point(double x, double y, double z) : vector(Vector3d(x, y, z)) {}
 
-Pointer::Pointer(const Vector3d &v) : vector(v) {}
+Point::Point(const Vector3d &v) : vector(v) {}
 
-double Pointer::x() const
+double Point::x() const
 {
     return vector[0];
 }
 
-double Pointer::y() const
+double Point::y() const
 {
     return vector[1];
 }
 
-double Pointer::z() const
+double Point::z() const
 {
     return vector[2];
 }
 
-Pointer Pointer::operator+(const Direction &d) const
+Point Point::operator+(const Direction &d) const
 {
-    return Pointer(vector[0] + d.x(), vector[1] + d.y(), vector[2] + d.z());
+    return Point(vector[0] + d.x(), vector[1] + d.y(), vector[2] + d.z());
 }
 
-Pointer Pointer::operator-(const Direction &d) const
+Point Point::operator-(const Direction &d) const
 {
-    return Pointer(vector[0] - d.x(), vector[1] - d.y(), vector[2] - d.z());
+    return Point(vector[0] - d.x(), vector[1] - d.y(), vector[2] - d.z());
 }
 
-Direction Pointer::operator-(const Pointer &p) const
+Direction Point::operator-(const Point &p) const
 {
     return Direction(vector - p.vector);
 }

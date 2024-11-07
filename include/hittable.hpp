@@ -10,7 +10,7 @@ class Material;
 
 class HitRecord {
 public:
-    Pointer p;
+    Point p;
     Direction normal;
     double t;
     std::shared_ptr<Material> material;

@@ -2,7 +2,7 @@
 #include "direction.hpp"
 #include "hittable.hpp"
 
-Sphere::Sphere(const Pointer &center, double radius, std::shared_ptr<Material> material) : center(center), radius(radius), material(material) {}
+Sphere::Sphere(const Point &center, double radius, std::shared_ptr<Material> material) : center(center), radius(radius), material(material) {}
 
 bool Sphere::hit(const Ray &ray, double t_min, double t_max, HitRecord &rec) const
 {

@@ -2,6 +2,7 @@
 
 #include "direction.hpp"
 #include "hittable.hpp"
+#include "hittable_list.hpp"
 #include "image.hpp"
 #include "color.hpp"
 #include "random_generator.hpp"
@@ -22,7 +23,7 @@ private:
     double viewport_height;
     double viewport_width;
 
-    Pointer center;
+    Point center;
 
 
     Direction forward;
@@ -35,10 +36,10 @@ private:
     Direction pixel_delta_u;
     Direction pixel_delta_v;
 
-    Pointer viewport_upper_left;
-    Pointer viewport_lower_left;
+    Point viewport_upper_left;
+    Point viewport_lower_left;
 
-    Pointer pixel00_center;
+    Point pixel00_center;
 
     Image image;
 
@@ -46,6 +47,8 @@ private:
     int max_depth = 25;
 
     RandomGenerator random_generator;
+
+    HittableList world;
 public:
 
     Camera(double aspect_ratio, int image_width);
@@ -58,9 +61,11 @@ public:
 
     void rotate(double yaw, double pitch, double roll);
 
-    void set_position(const Pointer &position);
+    void set_position(const Point &position);
 
     void set_direction(const Direction &direction);
+
+    void set_world(const HittableList &world);
 
     void render();
 

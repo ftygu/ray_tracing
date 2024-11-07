@@ -7,16 +7,16 @@ class Ray
 {
 private:
 
-    Pointer origin;
+    Point origin;
     Direction direction;
 
 public:
 
     Ray();
-    Ray(const Pointer &origin, const Direction &direction);
+    Ray(const Point &origin, const Direction &direction);
 
-    Pointer get_origin() const;
+    Point get_origin() const;
     Direction get_direction() const;
 
-    Pointer at(double t) const;
+    Point at(double t) const;
 };

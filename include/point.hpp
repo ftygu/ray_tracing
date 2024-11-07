@@ -4,16 +4,16 @@
 
 class Direction;
 
-class Pointer
+class Point
 {
 private:
 
     Vector3d vector;
 
 public:
-    Pointer();
-    Pointer(double x, double y, double z);
-    Pointer(const Vector3d &v);
+    Point();
+    Point(double x, double y, double z);
+    Point(const Vector3d &v);
 
     double x() const;
 
@@ -21,8 +21,8 @@ public:
 
     double z() const;
 
-    Pointer operator+(const Direction &d) const;
-    Pointer operator-(const Direction &d) const;
+    Point operator+(const Direction &d) const;
+    Point operator-(const Direction &d) const;
 
-    Direction operator-(const Pointer &p) const;
+    Direction operator-(const Point &p) const;
 };

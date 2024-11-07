@@ -7,7 +7,7 @@ double RandomGenerator::get_random_double(double min, double max)
     return dis(gen);
 }
 
-Pointer RandomGenerator::sample_point_square(Pointer center, double side_length, Coordinate fixed_coordinate)
+Point RandomGenerator::sample_point_square(Point center, double side_length, Coordinate fixed_coordinate)
 {
     std::uniform_real_distribution<> dis(-side_length / 2, side_length / 2);
 
@@ -31,10 +31,10 @@ Pointer RandomGenerator::sample_point_square(Pointer center, double side_length,
         break;
     }
 
-    return Pointer(x, y, z);
+    return Point(x, y, z);
 }
 
-Pointer RandomGenerator::sample_point_sphere(Pointer center, double radius)
+Point RandomGenerator::sample_point_sphere(Point center, double radius)
 {
     std::uniform_real_distribution<> dis(0, 2 * M_PI);
     double theta = dis(gen);
@@ -46,5 +46,5 @@ Pointer RandomGenerator::sample_point_sphere(Pointer center, double radius)
     double y = center.y() + radius * sin(phi) * sin(theta);
     double z = center.z() + radius * cos(phi);
 
-    return Pointer(x, y, z);
+    return Point(x, y, z);
 }

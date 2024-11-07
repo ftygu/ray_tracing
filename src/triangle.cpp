@@ -3,7 +3,7 @@
 #include "point.hpp"
 #include "ray.hpp"
 
-Triangle::Triangle(const Pointer &v0, const Pointer &v1, const Pointer &v2, std::shared_ptr<Material> material) : v0(v0), v1(v1), v2(v2), material(material) {}
+Triangle::Triangle(const Point &v0, const Point &v1, const Point &v2, std::shared_ptr<Material> material) : v0(v0), v1(v1), v2(v2), material(material) {}
 
 bool Triangle::hit(const Ray &ray, double t_min, double t_max, HitRecord &rec) const
 {
@@ -41,9 +41,15 @@ bool Triangle::hit(const Ray &ray, double t_min, double t_max, HitRecord &rec) c
         return false;
     }
 
+    auto normal = edge1.cross(edge2).unit();
+    if (normal.dot(ray.get_direction()) > 0)
+    {
+        normal = Direction(0, 0, 0) - normal;
+    }
+
     rec.t = t;
     rec.p = ray.at(rec.t);
-    rec.normal = edge1.cross(edge2).unit();
+    rec.normal = normal;
     rec.material = material;
 
     return true;

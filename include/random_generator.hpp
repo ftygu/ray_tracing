@@ -20,9 +20,9 @@ public:
 
     double get_random_double(double min, double max);
 
-    Pointer sample_point_square(Pointer center, double side_length, Coordinate fixed_coordinate);
+    Point sample_point_square(Point center, double side_length, Coordinate fixed_coordinate);
 
-    Pointer sample_point_sphere(Pointer center, double radius);
+    Point sample_point_sphere(Point center, double radius);
 private:
     std::random_device rd;
     std::mt19937 gen;

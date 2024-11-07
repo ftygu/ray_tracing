@@ -9,7 +9,13 @@
 #include <iostream>
 
 #include "camera.hpp"
+#include "point.hpp"
 #include "ppm_window.hpp"
+#include "hittable_list.hpp"
+#include "material.hpp"
+#include "sphere.hpp"
+#include "triangle.hpp"
+#include "obj_loader.hpp"
 
 // 全局变量用于事件处理
 std::mutex event_mutex;
@@ -92,7 +98,34 @@ int main(int argc, char* argv[]) {
     SDL_Init(SDL_INIT_VIDEO);
     atexit(SDL_Quit);
 
+    HittableList world;
+    objl::Loader loader;
+
+    loader.LoadFile("../models/bunny/bunny.obj");
+    auto mesh = loader.LoadedMeshes[0];
+    auto material = std::make_shared<Lambertian>(Color(0, 0, 255));
+    for (int i = 0; i < mesh.Vertices.size(); i += 3) {
+        auto v0 = mesh.Vertices[i];
+        auto v1 = mesh.Vertices[i + 1];
+        auto v2 = mesh.Vertices[i + 2];
+        auto p0 = Point(v0.Position.X, v0.Position.Y, v0.Position.Z);
+        auto p1 = Point(v1.Position.X, v1.Position.Y, v1.Position.Z);
+        auto p2 = Point(v2.Position.X, v2.Position.Y, v2.Position.Z);
+        auto triangle = std::make_shared<Triangle>(p0, p1, p2, material);
+        world.add(triangle);
+    }
+
+    auto floor_material = std::make_shared<Lambertian>(Color(50, 125, 60));
+    auto earth = std::make_shared<Sphere>(Point(0, -100000, 0),99999, floor_material);
+    world.add(earth);
+
+    auto red_material = std::make_shared<Lambertian>(Color(255, 0, 0));
+    auto red_sphere = std::make_shared<Sphere>(Point(0, 0, -2), 1, red_material);
+    world.add(red_sphere);
+
+
     Camera camera(16.0 / 9.0, 360);
+    camera.set_world(world);
     camera.render();
 
     std::stringstream ss;

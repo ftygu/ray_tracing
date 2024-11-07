@@ -25,6 +25,11 @@ private:
 
     Pointer center;
 
+
+    Direction forward;
+    Direction up;
+    Direction right;
+
     Direction viewport_u;
     Direction viewport_v;
 
@@ -38,7 +43,7 @@ private:
 
     Image image;
 
-    int samples_per_pixel = 10;
+    int samples_per_pixel = 5;
     int max_depth = 20;
 
     RandomGenerator random_generator;
@@ -47,6 +52,12 @@ public:
     Camera(double aspect_ratio, int image_width);
 
     void translate(const Direction &translation);
+
+    void translate(double forward, double right, double up);
+
+    Direction rotate_vector(const Direction& v, const Direction& axis, double angle);
+
+    void rotate(double yaw, double pitch, double roll);
 
     void set_position(const Pointer &position);
 

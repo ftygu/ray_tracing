@@ -20,6 +20,10 @@ Camera::Camera(double aspect_ratio, int image_width) : aspect_ratio(aspect_ratio
     viewport_width = aspect_ratio * viewport_height;
     center = Pointer(0, 0, 0);
 
+    forward = Direction(0, 0, -1);
+    up = Direction(0, 1, 0);
+    right = Direction(1, 0, 0);
+
     viewport_u = Direction(viewport_width, 0, 0);
     viewport_v = Direction(0, -viewport_height, 0);
 
@@ -38,10 +42,54 @@ Camera::Camera(double aspect_ratio, int image_width) : aspect_ratio(aspect_ratio
 void Camera::translate(const Direction &translation)
 {
     center = center + translation;
-    viewport_upper_left = center - Direction(0, 0, focal_length) - viewport_u / 2 - viewport_v / 2;
-    viewport_lower_left = center - Direction(0, 0, focal_length) + viewport_u / 2 + viewport_v / 2;
+    viewport_upper_left = center + forward * focal_length - viewport_u / 2 - viewport_v / 2;
+    viewport_lower_left = center + forward * focal_length + viewport_u / 2 + viewport_v / 2;
     pixel00_center = viewport_upper_left + pixel_delta_u / 2 + pixel_delta_v / 2;
-    std::clog << "Camera position: " << center.x() << ", " << center.y() << ", " << center.z() << '\n';
+}
+
+void Camera::translate(double forward, double right, double up)
+{
+    center = center + this->forward * forward + this->right * right + this->up * up;
+    viewport_upper_left = center + this->forward * focal_length - viewport_u / 2 - viewport_v / 2;
+    viewport_lower_left = center + this->forward * focal_length + viewport_u / 2 + viewport_v / 2;
+    pixel00_center = viewport_upper_left + pixel_delta_u / 2 + pixel_delta_v / 2;
+}
+
+Direction Camera::rotate_vector(const Direction& v, const Direction& axis, double angle)
+{
+    Direction k = axis.unit();
+    double cos_theta = std::cos(angle);
+    double sin_theta = std::sin(angle);
+    return v * cos_theta + k.cross(v) * sin_theta + k * k.dot(v) * (1 - cos_theta);
+}
+
+
+void Camera::rotate(double yaw, double pitch, double roll)
+{
+    if (yaw != 0)
+    {
+        forward = rotate_vector(forward, up, yaw);
+        right = rotate_vector(right, up, yaw);
+    } else if (pitch != 0)
+    {
+        forward = rotate_vector(forward, right, pitch);
+        up = rotate_vector(up, right, pitch);
+    } else if (roll != 0)
+    {
+        right = rotate_vector(right, forward, roll);
+        up = rotate_vector(up, forward, roll);
+    }
+
+    viewport_u = right * viewport_width;
+    viewport_v = (Direction(0, 0, 0) - up) * viewport_height;
+
+    pixel_delta_u = viewport_u / image_width;
+    pixel_delta_v = viewport_v / image_height;
+
+    viewport_upper_left = center + forward * focal_length - viewport_u / 2 - viewport_v / 2;
+    viewport_lower_left = center + forward * focal_length + viewport_u / 2 + viewport_v / 2;
+
+    pixel00_center = viewport_upper_left + pixel_delta_u / 2 + pixel_delta_v / 2;
 }
 
 void Camera::set_direction(const Direction &direction)
@@ -59,8 +107,9 @@ void Camera::render()
     auto material3 = std::make_shared<Lambertian>(Color(0, 125, 0));
     auto material4 
         = std::make_shared<Metal>(Color(255, 255, 255), 0.1);
-    auto material5 
+    auto material_glass
         = std::make_shared<Dielectric>(1.5);
+    auto air_material = std::make_shared<Dielectric>(1.0);
     auto sphere1 
         = std::make_shared<Sphere>(Pointer(0, -100000, -1), 99999.5, material1);
     auto sphere2 
@@ -70,12 +119,15 @@ void Camera::render()
     auto sphere4 
         = std::make_shared<Sphere>(Pointer(2, 0, -2), 0.5, material4);
     auto sphere5 
-        = std::make_shared<Sphere>(Pointer(-0.5, 0, -1), 0.5, material5);
+        = std::make_shared<Sphere>(Pointer(-0.5, 0, -1), 0.5, material_glass);
+    auto sphere6 
+        = std::make_shared<Sphere>(Pointer(-0.5, 0, -1), -0.45, material_glass);
     world.add(sphere1);
     world.add(sphere2);
     world.add(sphere3);
     world.add(sphere4);
     world.add(sphere5);
+    world.add(sphere6);
     for (int j = 0; j < image_height; ++j)
     {
         //std::clog << "Scanlines remaining: " << image_height - j << '\n';

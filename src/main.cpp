@@ -44,6 +44,24 @@ void handle_events() {
                 case SDLK_e:
                     key_char = 'e';
                     break;
+                case SDLK_u:
+                    key_char = 'u';
+                    break;
+                case SDLK_i:
+                    key_char = 'i';
+                    break;
+                case SDLK_o:
+                    key_char = 'o';
+                    break;
+                case SDLK_j:
+                    key_char = 'j';
+                    break;
+                case SDLK_k:
+                    key_char = 'k';
+                    break;
+                case SDLK_l:
+                    key_char = 'l';
+                    break;
                 default:
                     break;
             }
@@ -81,7 +99,7 @@ int main(int argc, char* argv[]) {
     std::vector<std::string> args(argv, argv + argc);
 
 
-    Camera camera(16.0 / 9.0, 200);
+    Camera camera(16.0 / 9.0, 400);
     camera.render();
 
 
@@ -107,27 +125,51 @@ int main(int argc, char* argv[]) {
 
         switch (toupper(key)) {
             case 'W':
-                camera.translate(Direction(0, 0, -0.3));
+                camera.translate(0.3, 0, 0);
                 camera_moved = true;
                 break;
             case 'S':
-                camera.translate(Direction(0, 0, 0.3));
+                camera.translate(-0.3, 0, 0);
                 camera_moved = true;
                 break;
             case 'A':
-                camera.translate(Direction(-0.3, 0, 0));
+                camera.translate(0, -0.3, 0);
                 camera_moved = true;
                 break;
             case 'D':
-                camera.translate(Direction(0.3, 0, 0));
+                camera.translate(0, 0.3, 0);
                 camera_moved = true;
                 break;
             case 'Q':
-                camera.translate(Direction(0, 0.3, 0));
+                camera.translate(0, 0, 0.3);
                 camera_moved = true;
                 break;
             case 'E':
-                camera.translate(Direction(0, -0.3, 0));
+                camera.translate(0, 0, -0.3);
+                camera_moved = true;
+                break;
+            case 'I':
+                camera.rotate(0, 0.1, 0);
+                camera_moved = true;
+                break;
+            case 'K':
+                camera.rotate(0, -0.1, 0);
+                camera_moved = true;
+                break;
+            case 'J':
+                camera.rotate(0.1, 0, 0);
+                camera_moved = true;
+                break;
+            case 'L':
+                camera.rotate(-0.1, 0, 0);
+                camera_moved = true;
+                break;
+            case 'U':
+                camera.rotate(0, 0, -0.1);
+                camera_moved = true;
+                break;
+            case 'O':
+                camera.rotate(0, 0, 0.1);
                 camera_moved = true;
                 break;
             default:

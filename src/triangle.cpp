@@ -54,3 +54,16 @@ bool Triangle::hit(const Ray &ray, double t_min, double t_max, HitRecord &rec) c
 
     return true;
 }
+
+AABB Triangle::bounding_box() const
+{
+    auto min_x = std::min(v0.x(), std::min(v1.x(), v2.x()));
+    auto min_y = std::min(v0.y(), std::min(v1.y(), v2.y()));
+    auto min_z = std::min(v0.z(), std::min(v1.z(), v2.z()));
+
+    auto max_x = std::max(v0.x(), std::max(v1.x(), v2.x()));
+    auto max_y = std::max(v0.y(), std::max(v1.y(), v2.y()));
+    auto max_z = std::max(v0.z(), std::max(v1.z(), v2.z()));
+
+    return AABB(Point(min_x, min_y, min_z), Point(max_x, max_y, max_z));
+}

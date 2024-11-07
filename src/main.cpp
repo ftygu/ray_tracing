@@ -1,5 +1,6 @@
 #include <SDL2/SDL.h>
 #include <SDL2/SDL_keycode.h>
+#include <memory>
 #include <vector>
 #include <string>
 #include <sstream>
@@ -8,7 +9,9 @@
 #include <cctype>
 #include <iostream>
 
+#include "bvh.hpp"
 #include "camera.hpp"
+#include "hittable.hpp"
 #include "point.hpp"
 #include "ppm_window.hpp"
 #include "hittable_list.hpp"
@@ -81,7 +84,6 @@ void handle_events() {
     }
 }
 
-// 获取按键事件的函数
 char get_key_event() {
     std::lock_guard<std::mutex> lock(event_mutex);
     if (!key_events.empty()) {
@@ -98,30 +100,30 @@ int main(int argc, char* argv[]) {
     SDL_Init(SDL_INIT_VIDEO);
     atexit(SDL_Quit);
 
-    HittableList world;
-    objl::Loader loader;
-
-    loader.LoadFile("../models/bunny/bunny.obj");
-    auto mesh = loader.LoadedMeshes[0];
-    auto material = std::make_shared<Lambertian>(Color(0, 0, 255));
-    for (int i = 0; i < mesh.Vertices.size(); i += 3) {
-        auto v0 = mesh.Vertices[i];
-        auto v1 = mesh.Vertices[i + 1];
-        auto v2 = mesh.Vertices[i + 2];
-        auto p0 = Point(v0.Position.X, v0.Position.Y, v0.Position.Z);
-        auto p1 = Point(v1.Position.X, v1.Position.Y, v1.Position.Z);
-        auto p2 = Point(v2.Position.X, v2.Position.Y, v2.Position.Z);
-        auto triangle = std::make_shared<Triangle>(p0, p1, p2, material);
-        world.add(triangle);
-    }
+    std::vector<std::shared_ptr<Hittable>> objects;
 
     auto floor_material = std::make_shared<Lambertian>(Color(50, 125, 60));
     auto earth = std::make_shared<Sphere>(Point(0, -100000, 0),99999, floor_material);
-    world.add(earth);
+    objects.push_back(earth);
 
     auto red_material = std::make_shared<Lambertian>(Color(255, 0, 0));
     auto red_sphere = std::make_shared<Sphere>(Point(0, 0, -2), 1, red_material);
-    world.add(red_sphere);
+    objects.push_back(red_sphere);
+
+    auto metal_material = std::make_shared<Metal>(Color(200, 200, 200), 0.1);
+
+    objl::Loader loader;
+    loader.LoadFile("../models/bunny/bunny.obj");
+    auto mesh = loader.LoadedMeshes[0];
+    for (size_t i = 0; i < mesh.Indices.size(); i += 3) {
+        auto v0 = Point(mesh.Vertices[mesh.Indices[i]].Position.X, mesh.Vertices[mesh.Indices[i]].Position.Y, mesh.Vertices[mesh.Indices[i]].Position.Z);
+        auto v1 = Point(mesh.Vertices[mesh.Indices[i + 1]].Position.X, mesh.Vertices[mesh.Indices[i + 1]].Position.Y, mesh.Vertices[mesh.Indices[i + 1]].Position.Z);
+        auto v2 = Point(mesh.Vertices[mesh.Indices[i + 2]].Position.X, mesh.Vertices[mesh.Indices[i + 2]].Position.Y, mesh.Vertices[mesh.Indices[i + 2]].Position.Z);
+        auto triangle = std::make_shared<Triangle>(v0, v1, v2, metal_material);
+        objects.push_back(triangle);
+    }
+
+    auto world = std::make_shared<BVH>(objects, 0, objects.size());
 
 
     Camera camera(16.0 / 9.0, 360);

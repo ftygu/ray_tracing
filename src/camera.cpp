@@ -100,7 +100,7 @@ void Camera::set_direction(const Direction &direction)
     pixel00_center = viewport_upper_left + pixel_delta_u / 2 + pixel_delta_v / 2;
 }
 
-void Camera::set_world(const HittableList &world)
+void Camera::set_world(std::shared_ptr<Hittable> world)
 {
     this->world = world;
 }
@@ -124,7 +124,7 @@ void Camera::render()
                 Direction direction = Direction(random_point - center).unit();
                 Ray ray(center, direction);
 
-                pixel_color = pixel_color + ray_color(ray, max_depth, world);
+                pixel_color = pixel_color + ray_color(ray, max_depth, *world);
             }
             pixel_color = pixel_color / samples_per_pixel;
             image.set_pixel(i, j, pixel_color);

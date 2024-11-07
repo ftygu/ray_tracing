@@ -23,3 +23,30 @@ bool HittableList::hit(const Ray &ray, double t_min, double t_max, HitRecord &re
 
     return hit_anything;
 }
+
+AABB HittableList::bounding_box() const
+{
+    if (objects.empty())
+    {
+        return AABB(Point(0, 0, 0), Point(0, 0, 0));
+    }
+
+    AABB box;
+    bool first_box = true;
+
+    for (const auto &object : objects)
+    {
+        auto object_box = object->bounding_box();
+        if (first_box)
+        {
+            box = object_box;
+        }
+        else
+        {
+            box = AABB::surrounding_box(box, object_box);
+        }
+        first_box = false;
+    }
+
+    return box;
+}

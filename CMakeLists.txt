@@ -5,7 +5,7 @@ cmake_minimum_required(VERSION 3.10)
 project(ray_tracer)
 
 # 设置 C++ 标准
-set(CMAKE_CXX_STANDARD 11)
+set(CMAKE_CXX_STANDARD 17)
 
 set(CMAKE_BUILD_TYPE Release)
 
@@ -34,6 +34,7 @@ add_executable(ray_tracer
     src/vector3d.cpp 
     src/hittable.cpp 
     src/sphere.cpp
+    src/triangle.cpp
     src/hittable_list.cpp
     src/random_generator.cpp
     src/material.cpp

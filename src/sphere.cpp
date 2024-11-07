@@ -40,3 +40,8 @@ bool Sphere::hit(const Ray &ray, double t_min, double t_max, HitRecord &rec) con
 
     return true;
 }
+
+AABB Sphere::bounding_box() const
+{
+    return AABB(center - Direction(radius, radius, radius), center + Direction(radius, radius, radius));
+}

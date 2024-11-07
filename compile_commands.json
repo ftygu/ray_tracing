@@ -1,32 +1,80 @@
 [
-{
-  "directory": "/home/ZhangMingkun/Labs/cg/ray_tracer/build",
-  "command": "/usr/bin/c++  -I/home/ZhangMingkun/Labs/cg/ray_tracer/include -g -std=gnu++11 -o CMakeFiles/vector3d_tester.dir/vector3d_tester.cpp.o -c /home/ZhangMingkun/Labs/cg/ray_tracer/vector3d_tester.cpp",
-  "file": "/home/ZhangMingkun/Labs/cg/ray_tracer/vector3d_tester.cpp",
-  "output": "CMakeFiles/vector3d_tester.dir/vector3d_tester.cpp.o"
-},
-{
-  "directory": "/home/ZhangMingkun/Labs/cg/ray_tracer/build",
-  "command": "/usr/bin/c++  -I/home/ZhangMingkun/Labs/cg/ray_tracer/include -g -std=gnu++11 -o CMakeFiles/vector3d_tester.dir/vector3d.cpp.o -c /home/ZhangMingkun/Labs/cg/ray_tracer/vector3d.cpp",
-  "file": "/home/ZhangMingkun/Labs/cg/ray_tracer/vector3d.cpp",
-  "output": "CMakeFiles/vector3d_tester.dir/vector3d.cpp.o"
-},
-{
-  "directory": "/home/ZhangMingkun/Labs/cg/ray_tracer/build",
-  "command": "/usr/bin/c++  -I/home/ZhangMingkun/Labs/cg/ray_tracer/include -g -std=gnu++11 -o CMakeFiles/ray_tracer.dir/main.cpp.o -c /home/ZhangMingkun/Labs/cg/ray_tracer/main.cpp",
-  "file": "/home/ZhangMingkun/Labs/cg/ray_tracer/main.cpp",
-  "output": "CMakeFiles/ray_tracer.dir/main.cpp.o"
-},
-{
-  "directory": "/home/ZhangMingkun/Labs/cg/ray_tracer/build",
-  "command": "/usr/bin/c++  -I/home/ZhangMingkun/Labs/cg/ray_tracer/include -g -std=gnu++11 -o CMakeFiles/ray_tracer.dir/image.cpp.o -c /home/ZhangMingkun/Labs/cg/ray_tracer/image.cpp",
-  "file": "/home/ZhangMingkun/Labs/cg/ray_tracer/image.cpp",
-  "output": "CMakeFiles/ray_tracer.dir/image.cpp.o"
-},
-{
-  "directory": "/home/ZhangMingkun/Labs/cg/ray_tracer/build",
-  "command": "/usr/bin/c++  -I/home/ZhangMingkun/Labs/cg/ray_tracer/include -g -std=gnu++11 -o CMakeFiles/ray_tracer.dir/color.cpp.o -c /home/ZhangMingkun/Labs/cg/ray_tracer/color.cpp",
-  "file": "/home/ZhangMingkun/Labs/cg/ray_tracer/color.cpp",
-  "output": "CMakeFiles/ray_tracer.dir/color.cpp.o"
-}
-]
+  {
+    "directory": "/home/ZhangMingkun/Labs/cg/ray_tracer/build",
+    "command": "/usr/bin/c++  -I/home/ZhangMingkun/Labs/cg/ray_tracer/include -I/home/ZhangMingkun/Labs/cg/ray_tracer/src -isystem /usr/include/SDL2 -O3 -march=native -ftree-vectorize -funsafe-math-optimizations -std=gnu++17 -o CMakeFiles/ray_tracer.dir/src/main.cpp.o -c /home/ZhangMingkun/Labs/cg/ray_tracer/src/main.cpp",
+    "file": "/home/ZhangMingkun/Labs/cg/ray_tracer/src/main.cpp",
+    "output": "CMakeFiles/ray_tracer.dir/src/main.cpp.o"
+  },
+  {
+    "directory": "/home/ZhangMingkun/Labs/cg/ray_tracer/build",
+    "command": "/usr/bin/c++  -I/home/ZhangMingkun/Labs/cg/ray_tracer/include -I/home/ZhangMingkun/Labs/cg/ray_tracer/src -isystem /usr/include/SDL2 -O3 -march=native -ftree-vectorize -funsafe-math-optimizations -std=gnu++17 -o CMakeFiles/ray_tracer.dir/src/image.cpp.o -c /home/ZhangMingkun/Labs/cg/ray_tracer/src/image.cpp",
+    "file": "/home/ZhangMingkun/Labs/cg/ray_tracer/src/image.cpp",
+    "output": "CMakeFiles/ray_tracer.dir/src/image.cpp.o"
+  },
+  {
+    "directory": "/home/ZhangMingkun/Labs/cg/ray_tracer/build",
+    "command": "/usr/bin/c++  -I/home/ZhangMingkun/Labs/cg/ray_tracer/include -I/home/ZhangMingkun/Labs/cg/ray_tracer/src -isystem /usr/include/SDL2 -O3 -march=native -ftree-vectorize -funsafe-math-optimizations -std=gnu++17 -o CMakeFiles/ray_tracer.dir/src/color.cpp.o -c /home/ZhangMingkun/Labs/cg/ray_tracer/src/color.cpp",
+    "file": "/home/ZhangMingkun/Labs/cg/ray_tracer/src/color.cpp",
+    "output": "CMakeFiles/ray_tracer.dir/src/color.cpp.o"
+  },
+  {
+    "directory": "/home/ZhangMingkun/Labs/cg/ray_tracer/build",
+    "command": "/usr/bin/c++  -I/home/ZhangMingkun/Labs/cg/ray_tracer/include -I/home/ZhangMingkun/Labs/cg/ray_tracer/src -isystem /usr/include/SDL2 -O3 -march=native -ftree-vectorize -funsafe-math-optimizations -std=gnu++17 -o CMakeFiles/ray_tracer.dir/src/point.cpp.o -c /home/ZhangMingkun/Labs/cg/ray_tracer/src/point.cpp",
+    "file": "/home/ZhangMingkun/Labs/cg/ray_tracer/src/point.cpp",
+    "output": "CMakeFiles/ray_tracer.dir/src/point.cpp.o"
+  },
+  {
+    "directory": "/home/ZhangMingkun/Labs/cg/ray_tracer/build",
+    "command": "/usr/bin/c++  -I/home/ZhangMingkun/Labs/cg/ray_tracer/include -I/home/ZhangMingkun/Labs/cg/ray_tracer/src -isystem /usr/include/SDL2 -O3 -march=native -ftree-vectorize -funsafe-math-optimizations -std=gnu++17 -o CMakeFiles/ray_tracer.dir/src/direction.cpp.o -c /home/ZhangMingkun/Labs/cg/ray_tracer/src/direction.cpp",
+    "file": "/home/ZhangMingkun/Labs/cg/ray_tracer/src/direction.cpp",
+    "output": "CMakeFiles/ray_tracer.dir/src/direction.cpp.o"
+  },
+  {
+    "directory": "/home/ZhangMingkun/Labs/cg/ray_tracer/build",
+    "command": "/usr/bin/c++  -I/home/ZhangMingkun/Labs/cg/ray_tracer/include -I/home/ZhangMingkun/Labs/cg/ray_tracer/src -isystem /usr/include/SDL2 -O3 -march=native -ftree-vectorize -funsafe-math-optimizations -std=gnu++17 -o CMakeFiles/ray_tracer.dir/src/ray.cpp.o -c /home/ZhangMingkun/Labs/cg/ray_tracer/src/ray.cpp",
+    "file": "/home/ZhangMingkun/Labs/cg/ray_tracer/src/ray.cpp",
+    "output": "CMakeFiles/ray_tracer.dir/src/ray.cpp.o"
+  },
+  {
+    "directory": "/home/ZhangMingkun/Labs/cg/ray_tracer/build",
+    "command": "/usr/bin/c++  -I/home/ZhangMingkun/Labs/cg/ray_tracer/include -I/home/ZhangMingkun/Labs/cg/ray_tracer/src -isystem /usr/include/SDL2 -O3 -march=native -ftree-vectorize -funsafe-math-optimizations -std=gnu++17 -o CMakeFiles/ray_tracer.dir/src/camera.cpp.o -c /home/ZhangMingkun/Labs/cg/ray_tracer/src/camera.cpp",
+    "file": "/home/ZhangMingkun/Labs/cg/ray_tracer/src/camera.cpp",
+    "output": "CMakeFiles/ray_tracer.dir/src/camera.cpp.o"
+  },
+  {
+    "directory": "/home/ZhangMingkun/Labs/cg/ray_tracer/build",
+    "command": "/usr/bin/c++  -I/home/ZhangMingkun/Labs/cg/ray_tracer/include -I/home/ZhangMingkun/Labs/cg/ray_tracer/src -isystem /usr/include/SDL2 -O3 -march=native -ftree-vectorize -funsafe-math-optimizations -std=gnu++17 -o CMakeFiles/ray_tracer.dir/src/vector3d.cpp.o -c /home/ZhangMingkun/Labs/cg/ray_tracer/src/vector3d.cpp",
+    "file": "/home/ZhangMingkun/Labs/cg/ray_tracer/src/vector3d.cpp",
+    "output": "CMakeFiles/ray_tracer.dir/src/vector3d.cpp.o"
+  },
+  {
+    "directory": "/home/ZhangMingkun/Labs/cg/ray_tracer/build",
+    "command": "/usr/bin/c++  -I/home/ZhangMingkun/Labs/cg/ray_tracer/include -I/home/ZhangMingkun/Labs/cg/ray_tracer/src -isystem /usr/include/SDL2 -O3 -march=native -ftree-vectorize -funsafe-math-optimizations -std=gnu++17 -o CMakeFiles/ray_tracer.dir/src/hittable.cpp.o -c /home/ZhangMingkun/Labs/cg/ray_tracer/src/hittable.cpp",
+    "file": "/home/ZhangMingkun/Labs/cg/ray_tracer/src/hittable.cpp",
+    "output": "CMakeFiles/ray_tracer.dir/src/hittable.cpp.o"
+  },
+  {
+    "directory": "/home/ZhangMingkun/Labs/cg/ray_tracer/build",
+    "command": "/usr/bin/c++  -I/home/ZhangMingkun/Labs/cg/ray_tracer/include -I/home/ZhangMingkun/Labs/cg/ray_tracer/src -isystem /usr/include/SDL2 -O3 -march=native -ftree-vectorize -funsafe-math-optimizations -std=gnu++17 -o CMakeFiles/ray_tracer.dir/src/sphere.cpp.o -c /home/ZhangMingkun/Labs/cg/ray_tracer/src/sphere.cpp",
+    "file": "/home/ZhangMingkun/Labs/cg/ray_tracer/src/sphere.cpp",
+    "output": "CMakeFiles/ray_tracer.dir/src/sphere.cpp.o"
+  },
+  {
+    "directory": "/home/ZhangMingkun/Labs/cg/ray_tracer/build",
+    "command": "/usr/bin/c++  -I/home/ZhangMingkun/Labs/cg/ray_tracer/include -I/home/ZhangMingkun/Labs/cg/ray_tracer/src -isystem /usr/include/SDL2 -O3 -march=native -ftree-vectorize -funsafe-math-optimizations -std=gnu++17 -o CMakeFiles/ray_tracer.dir/src/hittable_list.cpp.o -c /home/ZhangMingkun/Labs/cg/ray_tracer/src/hittable_list.cpp",
+    "file": "/home/ZhangMingkun/Labs/cg/ray_tracer/src/hittable_list.cpp",
+    "output": "CMakeFiles/ray_tracer.dir/src/hittable_list.cpp.o"
+  },
+  {
+    "directory": "/home/ZhangMingkun/Labs/cg/ray_tracer/build",
+    "command": "/usr/bin/c++  -I/home/ZhangMingkun/Labs/cg/ray_tracer/include -I/home/ZhangMingkun/Labs/cg/ray_tracer/src -isystem /usr/include/SDL2 -O3 -march=native -ftree-vectorize -funsafe-math-optimizations -std=gnu++17 -o CMakeFiles/ray_tracer.dir/src/random_generator.cpp.o -c /home/ZhangMingkun/Labs/cg/ray_tracer/src/random_generator.cpp",
+    "file": "/home/ZhangMingkun/Labs/cg/ray_tracer/src/random_generator.cpp",
+    "output": "CMakeFiles/ray_tracer.dir/src/random_generator.cpp.o"
+  },
+  {
+    "directory": "/home/ZhangMingkun/Labs/cg/ray_tracer/build",
+    "command": "/usr/bin/c++  -I/home/ZhangMingkun/Labs/cg/ray_tracer/include -I/home/ZhangMingkun/Labs/cg/ray_tracer/src -isystem /usr/include/SDL2 -O3 -march=native -ftree-vectorize -funsafe-math-optimizations -std=gnu++17 -o CMakeFiles/ray_tracer.dir/src/material.cpp.o -c /home/ZhangMingkun/Labs/cg/ray_tracer/src/material.cpp",
+    "file": "/home/ZhangMingkun/Labs/cg/ray_tracer/src/material.cpp",
+    "output": "CMakeFiles/ray_tracer.dir/src/material.cpp.o"
+  }
+  ]

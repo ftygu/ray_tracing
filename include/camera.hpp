@@ -8,6 +8,7 @@
 #include "random_generator.hpp"
 #include "ray.hpp"
 #include "point.hpp"
+#include <memory>
 
 class Camera
 {
@@ -48,7 +49,7 @@ private:
 
     RandomGenerator random_generator;
 
-    HittableList world;
+    std::shared_ptr<Hittable> world;
 public:
 
     Camera(double aspect_ratio, int image_width);
@@ -65,7 +66,7 @@ public:
 
     void set_direction(const Direction &direction);
 
-    void set_world(const HittableList &world);
+    void set_world(std::shared_ptr<Hittable> world);
 
     void render();
 

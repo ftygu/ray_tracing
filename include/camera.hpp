@@ -6,7 +6,6 @@
 #include "color.hpp"
 #include "random_generator.hpp"
 #include "ray.hpp"
-#include "vector3d.hpp"
 #include "point.hpp"
 
 class Camera
@@ -43,8 +42,8 @@ private:
 
     Image image;
 
-    int samples_per_pixel = 5;
-    int max_depth = 20;
+    int samples_per_pixel = 10;
+    int max_depth = 25;
 
     RandomGenerator random_generator;
 public:

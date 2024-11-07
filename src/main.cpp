@@ -87,37 +87,23 @@ char get_key_event() {
 }
 
 int main(int argc, char* argv[]) {
-
-    if (SDL_Init(SDL_INIT_VIDEO) != 0) {
-        std::cerr << "SDL_Init 错误: " << SDL_GetError() << std::endl;
-        return 1;
-    }
-
-
-    atexit(SDL_Quit);
-
     std::vector<std::string> args(argv, argv + argc);
 
+    SDL_Init(SDL_INIT_VIDEO);
+    atexit(SDL_Quit);
 
-    Camera camera(16.0 / 9.0, 400);
+    Camera camera(16.0 / 9.0, 360);
     camera.render();
-
 
     std::stringstream ss;
     camera.write_image(ss);
 
-
     PPMWindow window;
-    if (!window.display_image(ss.str())) {
-        std::cerr << "无法显示图像。" << std::endl;
-        return 1;
-    }
+    window.display_image(ss.str());
 
-    // 主循环
     while (is_running && window.running()) {
 
         handle_events();
-
 
         char key = get_key_event();
         bool camera_moved = false;
@@ -182,14 +168,8 @@ int main(int argc, char* argv[]) {
             ss.str("");
             ss.clear();
             camera.write_image(ss);
-
-            if (!window.display_image(ss.str())) {
-                std::cerr << "无法更新图像。" << std::endl;
-                is_running = false;
-            }
+            window.display_image(ss.str());
         }
-
-
         SDL_Delay(10);
     }
 

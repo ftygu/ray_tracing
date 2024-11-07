@@ -6,9 +6,10 @@
 #include "material.hpp"
 #include "point.hpp"
 #include "random_generator.hpp"
-#include "vector3d.hpp"
 #include "sphere.hpp"
+#include "triangle.hpp"
 #include <iostream>
+#include <omp.h>
 
 Camera::Camera(double aspect_ratio, int image_width) : aspect_ratio(aspect_ratio), image_width(image_width)
 {
@@ -102,22 +103,24 @@ void Camera::set_direction(const Direction &direction)
 void Camera::render()
 {
     HittableList world;
-    auto material1 = std::make_shared<Lambertian>(Color(125, 125, 125));
-    auto material2 = std::make_shared<Lambertian>(Color(125,0,0));
-    auto material3 = std::make_shared<Lambertian>(Color(0, 125, 0));
-    auto material4 
+    auto material_floor = std::make_shared<Lambertian>(Color(75, 125, 75));
+    auto material_red = std::make_shared<Lambertian>(Color(125,0,0));
+    auto material_green = std::make_shared<Lambertian>(Color(0, 125, 0));
+    auto material_metal 
         = std::make_shared<Metal>(Color(255, 255, 255), 0.1);
     auto material_glass
         = std::make_shared<Dielectric>(1.5);
     auto air_material = std::make_shared<Dielectric>(1.0);
+    auto triangle1
+        = std::make_shared<Triangle>(Pointer(0, 0, -1), Pointer(0, 1, -1), Pointer(1, 0, -1), material_red);
     auto sphere1 
-        = std::make_shared<Sphere>(Pointer(0, -100000, -1), 99999.5, material1);
+        = std::make_shared<Sphere>(Pointer(0, -100000, -1), 99999.5, material_floor);
     auto sphere2 
-        = std::make_shared<Sphere>(Pointer(0, 0, -2), 0.5, material2);
+        = std::make_shared<Sphere>(Pointer(0, 0, -2), 0.5, material_red);
     auto sphere3 
-        = std::make_shared<Sphere>(Pointer(-2, 0, -2), 0.5, material3);
+        = std::make_shared<Sphere>(Pointer(-2, 0, -2), 0.5, material_green);
     auto sphere4 
-        = std::make_shared<Sphere>(Pointer(2, 0, -2), 0.5, material4);
+        = std::make_shared<Sphere>(Pointer(2, 0, -2), 0.5, material_metal);
     auto sphere5 
         = std::make_shared<Sphere>(Pointer(-0.5, 0, -1), 0.5, material_glass);
     auto sphere6 
@@ -128,9 +131,12 @@ void Camera::render()
     world.add(sphere4);
     world.add(sphere5);
     world.add(sphere6);
+    world.add(triangle1);
+
     for (int j = 0; j < image_height; ++j)
     {
-        //std::clog << "Scanlines remaining: " << image_height - j << '\n';
+
+        #pragma omp parallel for schedule(dynamic) num_threads(8)
         for (int i = 0; i < image_width; ++i)
         {
             auto p = pixel00_center + pixel_delta_u * i + pixel_delta_v * j;
@@ -148,6 +154,8 @@ void Camera::render()
             pixel_color = pixel_color / samples_per_pixel;
             image.set_pixel(i, j, pixel_color);
         }
+
+        std::clog << "Scanlines remaining: " << image_height - j << '\n';
     }
 }
 

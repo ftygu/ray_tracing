@@ -1,9 +1,11 @@
-// bvh.hpp
 #pragma once
-#include "hittable.hpp"
-#include "aabb.hpp"
+
 #include <algorithm>
 #include <vector>
+
+#include "hittable.hpp"
+#include "aabb.hpp"
+
 
 class BVH : public Hittable {
 public:

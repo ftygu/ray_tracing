@@ -1,5 +1,4 @@
 #include "random_generator.hpp"
-#include "point.hpp"
 
 double RandomGenerator::get_random_double(double min, double max)
 {

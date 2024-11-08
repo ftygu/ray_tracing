@@ -26,12 +26,8 @@ include_directories(${SDL2_INCLUDE_DIRS})
 add_executable(ray_tracer 
     src/main.cpp 
     src/image.cpp 
-    src/color.cpp 
-    src/point.cpp 
-    src/direction.cpp 
     src/ray.cpp 
     src/camera.cpp 
-    src/vector3d.cpp 
     src/hittable.cpp 
     src/sphere.cpp
     src/triangle.cpp

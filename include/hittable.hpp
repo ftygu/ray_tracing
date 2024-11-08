@@ -1,10 +1,9 @@
 #pragma once
 
+#include "basic_types.hpp"
 #include "aabb.hpp"
-#include "point.hpp"
-#include "direction.hpp"
-#include "color.hpp"
 #include "ray.hpp"
+
 #include <memory>
 
 class Material;

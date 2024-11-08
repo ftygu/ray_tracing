@@ -1,7 +1,4 @@
 #include "triangle.hpp"
-#include "direction.hpp"
-#include "point.hpp"
-#include "ray.hpp"
 
 Triangle::Triangle(const Point &v0, const Point &v1, const Point &v2, std::shared_ptr<Material> material) : v0(v0), v1(v1), v2(v2), material(material) {}
 

@@ -1,5 +1,4 @@
 #include "material.hpp"
-#include "direction.hpp"
 #include "ray.hpp"
 
 RandomGenerator Material::random_generator;

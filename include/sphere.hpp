@@ -1,6 +1,6 @@
 #include "hittable.hpp"
 #include "material.hpp"
-#include "point.hpp"
+#include "basic_types.hpp"
 #include <memory>
 
 class Sphere : public Hittable

@@ -1,7 +1,8 @@
 // aabb.hpp
 #pragma once
+
 #include "ray.hpp"
-#include "point.hpp"
+#include "basic_types.hpp"
 
 class AABB {
 public:
@@ -11,7 +12,7 @@ public:
     AABB() {}
     AABB(const Point& a, const Point& b) : minimum(a), maximum(b) {}
 
-    bool hit(const Ray& ray, double t_min, double t_max) const {
+    inline bool hit(const Ray& ray, double t_min, double t_max) const {
         auto invD = 1.0f / ray.get_direction().x();
         auto t0 = (minimum.x() - ray.get_origin().x()) * invD;
         auto t1 = (maximum.x() - ray.get_origin().x()) * invD;
@@ -44,7 +45,7 @@ public:
         return true;
     }
 
-    static AABB surrounding_box(const AABB& box0, const AABB& box1) {
+    inline static AABB surrounding_box(const AABB& box0, const AABB& box1) {
         Point small(fmin(box0.minimum.x(), box1.minimum.x()),
                     fmin(box0.minimum.y(), box1.minimum.y()),
                     fmin(box0.minimum.z(), box1.minimum.z()));

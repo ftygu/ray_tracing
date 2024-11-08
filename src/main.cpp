@@ -11,9 +11,7 @@
 
 #include "bvh.hpp"
 #include "camera.hpp"
-#include "color.hpp"
 #include "hittable.hpp"
-#include "point.hpp"
 #include "ppm_window.hpp"
 #include "hittable_list.hpp"
 #include "material.hpp"
@@ -21,6 +19,7 @@
 #include "sphere.hpp"
 #include "triangle.hpp"
 #include "obj_loader.hpp"
+#include "basic_types.hpp"
 
 // 全局变量用于事件处理
 std::mutex event_mutex;

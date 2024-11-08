@@ -1,13 +1,13 @@
 #pragma once
 
-#include "direction.hpp"
+#include "basic_types.hpp"
+#include "ray.hpp"
 #include "hittable.hpp"
 #include "hittable_list.hpp"
+
 #include "image.hpp"
-#include "color.hpp"
 #include "random_generator.hpp"
-#include "ray.hpp"
-#include "point.hpp"
+
 #include <memory>
 
 class Camera

@@ -1,5 +1,4 @@
 #include "sphere.hpp"
-#include "direction.hpp"
 #include "hittable.hpp"
 
 Sphere::Sphere(const Point &center, double radius, std::shared_ptr<Material> material) : center(center), radius(radius), material(material) {}

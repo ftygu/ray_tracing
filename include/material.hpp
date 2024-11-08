@@ -1,8 +1,11 @@
 #pragma once
-#include "random_generator.hpp"
+
+#include "basic_types.hpp"
 #include "ray.hpp"
 #include "hittable.hpp"
-#include "color.hpp"
+
+#include "random_generator.hpp"
+
 class ScatterRecord{
 public:
     Ray scattered_ray;

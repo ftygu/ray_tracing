@@ -1,6 +1,6 @@
 #pragma once
 
-#include "color.hpp"
+#include "basic_types.hpp"
 
 #include <iostream>
 #include <vector>

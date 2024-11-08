@@ -2,8 +2,7 @@
 
 #include <random>
 
-#include "direction.hpp"
-#include "point.hpp"
+#include "basic_types.hpp"
 
 class RandomGenerator
 {

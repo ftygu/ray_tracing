@@ -22,7 +22,7 @@ public:
 
     double length_squared() const;
 
-    double length() const;
+    double length() const;     
 
     double operator[](int i) const;
     double& operator[](int i);

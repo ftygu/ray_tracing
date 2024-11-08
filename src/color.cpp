@@ -1,4 +1,5 @@
 #include "color.hpp"
+#include <cmath>
 
 Color::Color() : vector(Vector3d()) {}
 
@@ -23,12 +24,20 @@ double Color::b() const
 
 void Color::write_as_ppm(std::ostream &out) const
 {
-    int ir = static_cast<int>(r());
-    int ig = static_cast<int>(g());
-    int ib = static_cast<int>(b());
+    const double gamma = 2.2;
+
+    auto gamma_correct = [&](double c) -> int {
+        double normalized = c / 255.0;
+        double corrected = std::pow(normalized, 1.0 / gamma);
+        return static_cast<int>(corrected * 255.0 + 0.5);
+    };
+    
+    int ir = gamma_correct(r());
+    int ig = gamma_correct(g());
+    int ib = gamma_correct(b());
+    
     out << ir << ' ' << ig << ' ' << ib << '\n';
 }
-
 Color Color::operator+(const Color &c) const
 {
     return Color(vector + c.vector);

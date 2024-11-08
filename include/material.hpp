@@ -14,8 +14,10 @@ class Material
 {
 protected:
     static RandomGenerator random_generator;
+    Color light_color;
 public:
     virtual void scatter(const Ray &ray_in, const HitRecord &rec, ScatterRecord &srec) const = 0;
+    void set_light_color(const Color &light_color);
 };
 
 class Lambertian : public Material

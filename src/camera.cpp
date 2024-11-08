@@ -19,7 +19,7 @@ Camera::Camera(double aspect_ratio, int image_width) : aspect_ratio(aspect_ratio
     focal_length = 1.0;
     viewport_height = 2.0;
     viewport_width = aspect_ratio * viewport_height;
-    center = Point(0, 0, 0);
+    center = Point(0, 1, 0);
 
     forward = Direction(0, 0, -1);
     up = Direction(0, 1, 0);
@@ -111,7 +111,6 @@ void Camera::render()
     for (int j = 0; j < image_height; ++j)
     {
 
-        #pragma omp parallel for schedule(dynamic) num_threads(8)
         for (int i = 0; i < image_width; ++i)
         {
             auto p = pixel00_center + pixel_delta_u * i + pixel_delta_v * j;
@@ -129,6 +128,35 @@ void Camera::render()
             pixel_color = pixel_color / samples_per_pixel;
             image.set_pixel(i, j, pixel_color);
         }
+        std::clog << "Scanlines remaining: " << image_height - j << '\n';
+    }
+}
+
+void Camera::render_parallel()
+{
+    // Use all available CPU threads
+    int num_threads = omp_get_max_threads();
+    omp_set_num_threads(num_threads);
+
+    for (int j = 0; j < image_height; ++j)
+    {
+        #pragma omp parallel for schedule(guided)
+        for (int i = 0; i < image_width; ++i)
+        {
+            auto p = pixel00_center + pixel_delta_u * i + pixel_delta_v * j;
+            Color pixel_color(0, 0, 0);
+
+            for (int s = 0; s < samples_per_pixel; ++s)
+            {
+                auto random_point = random_generator.sample_point_square(p, 0.01, RandomGenerator::Z);
+                Direction direction = Direction(random_point - center).unit();
+                Ray ray(center, direction);
+                pixel_color = pixel_color + ray_color(ray, max_depth, *world);
+            }
+
+            pixel_color = pixel_color / samples_per_pixel;
+            image.set_pixel(i, j, pixel_color);
+        }
 
         std::clog << "Scanlines remaining: " << image_height - j << '\n';
     }
@@ -138,7 +166,7 @@ Color Camera::ray_color(const Ray &ray, int depth, const Hittable &world)
 {
     if (depth <= 0)
     {
-        return Color(0, 0, 255);
+        return Color(0, 0, 0);
     }
 
     HitRecord rec;
@@ -149,7 +177,7 @@ Color Camera::ray_color(const Ray &ray, int depth, const Hittable &world)
         rec.material->scatter(ray, rec, srec);
         return srec.attenuation * ray_color(srec.scattered_ray, depth - 1, world) / Color(255,255,255) + srec.emitted;
     } else {
-        Color background = Color(255, 255, 255);
+        Color background = Color(125, 125, 255);
         return background;
     }
 }

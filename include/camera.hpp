@@ -44,7 +44,7 @@ private:
 
     Image image;
 
-    int samples_per_pixel = 10;
+    int samples_per_pixel = 5;
     int max_depth = 25;
 
     RandomGenerator random_generator;
@@ -69,6 +69,8 @@ public:
     void set_world(std::shared_ptr<Hittable> world);
 
     void render();
+
+    void render_parallel();
 
     Color ray_color(const Ray &ray, int depth, const Hittable &world);
 

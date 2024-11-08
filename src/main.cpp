@@ -11,11 +11,13 @@
 
 #include "bvh.hpp"
 #include "camera.hpp"
+#include "color.hpp"
 #include "hittable.hpp"
 #include "point.hpp"
 #include "ppm_window.hpp"
 #include "hittable_list.hpp"
 #include "material.hpp"
+#include "random_generator.hpp"
 #include "sphere.hpp"
 #include "triangle.hpp"
 #include "obj_loader.hpp"
@@ -94,6 +96,91 @@ char get_key_event() {
     return 0;
 }
 
+bool spheres_overlap(const std::shared_ptr<Sphere>& sphere1, const std::shared_ptr<Sphere>& sphere2) {
+    double distance_squared = (sphere1->get_center().x() - sphere2->get_center().x()) * (sphere1->get_center().x() - sphere2->get_center().x()) +
+                              (sphere1->get_center().y() - sphere2->get_center().y()) * (sphere1->get_center().y() - sphere2->get_center().y()) +
+                              (sphere1->get_center().z() - sphere2->get_center().z()) * (sphere1->get_center().z() - sphere2->get_center().z());
+    double radius_sum = sphere1->get_radius() + sphere2->get_radius();
+    return distance_squared < (radius_sum * radius_sum);
+}
+
+std::vector<std::shared_ptr<Hittable>> generate_random_scene() {
+    RandomGenerator random_generator;
+    std::vector<std::shared_ptr<Hittable>> objects;
+    objects.reserve(10001); // 100随机球 + 地板
+
+    const int max_attempts = 1000; // 每个球的最大尝试次数
+    const int desired_sphere_count = 1000;
+    int sphere_count = 0;
+
+    while (sphere_count < desired_sphere_count) {
+        bool overlap = false;
+        int attempts = 0;
+
+        double random_r = random_generator.get_random_double(0, 255);
+        double random_g = random_generator.get_random_double(0, 255);
+        double random_b = random_generator.get_random_double(0, 255);
+
+        auto random_double = random_generator.get_random_double(0, 1);
+
+        std::shared_ptr<Material> random_material;
+
+        switch (static_cast<int>(random_double * 3)) {
+            case 0:
+                random_material = std::make_shared<Lambertian>(Color(random_r, random_g, random_b));
+                break;
+            case 1:
+                random_material = std::make_shared<Metal>(Color(random_r, random_g, random_b), random_generator.get_random_double(0, 0.3));
+                break;
+            case 2:
+                random_material = std::make_shared<Dielectric>(random_generator.get_random_double(1.1, 2.5));
+                break;
+            default:
+                break;
+        }
+
+        double random_x, random_y, random_z, random_radius;
+        std::shared_ptr<Sphere> random_sphere;
+
+        do {
+            if (attempts >= max_attempts) {
+                break;
+            }
+
+            random_x = random_generator.get_random_double(-10, 10);
+            random_radius = random_generator.get_random_double(0.1, 1);
+            double y = random_radius;
+            random_z = random_generator.get_random_double(-10, 10);
+
+            random_sphere = std::make_shared<Sphere>(Point(random_x, y, random_z), random_radius, random_material);
+
+            overlap = false;
+            for (const auto& obj : objects) {
+                auto existing_sphere = std::dynamic_pointer_cast<Sphere>(obj);
+                if (existing_sphere) {
+                    if (spheres_overlap(random_sphere, existing_sphere)) {
+                        overlap = true;
+                        break;
+                    }
+                }
+            }
+
+            attempts++;
+        } while (overlap);
+
+        if (!overlap) {
+            objects.push_back(random_sphere);
+            sphere_count++;
+        }
+    }
+
+    // 添加地板
+    auto floor_material = std::make_shared<Lambertian>(Color(125, 125, 125));
+    auto floor = std::make_shared<Sphere>(Point(0, -1000, 0), 1000, floor_material);
+    objects.push_back(floor);
+    return objects;
+}
+
 int main(int argc, char* argv[]) {
     std::vector<std::string> args(argv, argv + argc);
 
@@ -102,33 +189,32 @@ int main(int argc, char* argv[]) {
 
     std::vector<std::shared_ptr<Hittable>> objects;
 
-    auto floor_material = std::make_shared<Lambertian>(Color(50, 125, 60));
-    auto earth = std::make_shared<Sphere>(Point(0, -100000, 0),99999, floor_material);
-    objects.push_back(earth);
+    objects = generate_random_scene();
 
-    auto red_material = std::make_shared<Lambertian>(Color(255, 0, 0));
-    auto red_sphere = std::make_shared<Sphere>(Point(0, 0, -2), 1, red_material);
-    objects.push_back(red_sphere);
-
-    auto metal_material = std::make_shared<Metal>(Color(200, 200, 200), 0.1);
+    
 
     objl::Loader loader;
     loader.LoadFile("../models/bunny/bunny.obj");
     auto mesh = loader.LoadedMeshes[0];
     for (size_t i = 0; i < mesh.Indices.size(); i += 3) {
-        auto v0 = Point(mesh.Vertices[mesh.Indices[i]].Position.X, mesh.Vertices[mesh.Indices[i]].Position.Y, mesh.Vertices[mesh.Indices[i]].Position.Z);
-        auto v1 = Point(mesh.Vertices[mesh.Indices[i + 1]].Position.X, mesh.Vertices[mesh.Indices[i + 1]].Position.Y, mesh.Vertices[mesh.Indices[i + 1]].Position.Z);
-        auto v2 = Point(mesh.Vertices[mesh.Indices[i + 2]].Position.X, mesh.Vertices[mesh.Indices[i + 2]].Position.Y, mesh.Vertices[mesh.Indices[i + 2]].Position.Z);
-        auto triangle = std::make_shared<Triangle>(v0, v1, v2, metal_material);
-        objects.push_back(triangle);
+        //auto v0 = Point(mesh.Vertices[mesh.Indices[i]].Position.X, mesh.Vertices[mesh.Indices[i]].Position.Y, mesh.Vertices[mesh.Indices[i]].Position.Z);
+        //auto v1 = Point(mesh.Vertices[mesh.Indices[i + 1]].Position.X, mesh.Vertices[mesh.Indices[i + 1]].Position.Y, mesh.Vertices[mesh.Indices[i + 1]].Position.Z);
+        //auto v2 = Point(mesh.Vertices[mesh.Indices[i + 2]].Position.X, mesh.Vertices[mesh.Indices[i + 2]].Position.Y, mesh.Vertices[mesh.Indices[i + 2]].Position.Z);
+        //auto triangle = std::make_shared<Triangle>(v0, v1, v2, blue_material);
+        //objects.push_back(triangle);
     }
 
     auto world = std::make_shared<BVH>(objects, 0, objects.size());
 
 
-    Camera camera(16.0 / 9.0, 360);
+    Camera camera(16.0 / 9.0, 520);
     camera.set_world(world);
-    camera.render();
+    //camera.render();
+
+    double start_time_parallel = SDL_GetTicks();
+    camera.render_parallel();
+    double end_time_parallel = SDL_GetTicks();
+    std::clog << "并行渲染时间: " << end_time_parallel - start_time_parallel << "ms\n";
 
     std::stringstream ss;
     camera.write_image(ss);
@@ -199,7 +285,7 @@ int main(int argc, char* argv[]) {
 
 
         if (camera_moved) {
-            camera.render();
+            camera.render_parallel();
             ss.str("");
             ss.clear();
             camera.write_image(ss);

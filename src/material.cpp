@@ -4,13 +4,18 @@
 
 RandomGenerator Material::random_generator;
 
+void Material::set_light_color(const Color &light_color)
+{
+    this->light_color = light_color;
+}
+
 void Lambertian::scatter(const Ray &ray_in, const HitRecord &rec, ScatterRecord &srec) const
 {
     auto random_point = random_generator.sample_point_sphere(rec.p, 1) + rec.normal;
     auto ray_direction = Direction(random_point - rec.p).unit();
     srec.scattered_ray = Ray(rec.p, ray_direction);
     srec.attenuation = albedo;
-    srec.emitted = Color(0, 0, 0);
+    srec.emitted = light_color;
 }
 
 void Metal::scatter(const Ray &ray_in, const HitRecord &rec, ScatterRecord &srec) const
@@ -19,7 +24,7 @@ void Metal::scatter(const Ray &ray_in, const HitRecord &rec, ScatterRecord &srec
     auto ray_direction = Direction(random_point - rec.p).unit();
     srec.scattered_ray = Ray(rec.p, ray_direction);
     srec.attenuation = albedo;
-    srec.emitted = Color(0, 0, 0);
+    srec.emitted = light_color;
 }
 
 
@@ -46,7 +51,6 @@ bool Dielectric::refract(const Direction& v, const Direction& n, double ni_over_
     }
 }
 
-// Computes the reflection coefficient using Schlick's approximation
 double Dielectric::schlick(double cosine, double ref_idx)
 {
     double r0 = (1 - ref_idx) / (1 + ref_idx);
@@ -58,7 +62,7 @@ double Dielectric::schlick(double cosine, double ref_idx)
 void Dielectric::scatter(const Ray &ray_in, const HitRecord &rec, ScatterRecord &srec) const
 {
     srec.attenuation = Color(255, 255, 255);
-    srec.emitted = Color(0, 0, 0);
+    srec.emitted = light_color;
 
     Direction reflected = reflect(ray_in.get_direction(), rec.normal);
     double ni_over_nt;

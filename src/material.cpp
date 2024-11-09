@@ -1,4 +1,5 @@
 #include "material.hpp"
+#include "basic_types.hpp"
 #include "ray.hpp"
 
 RandomGenerator Material::random_generator;
@@ -15,6 +16,23 @@ void Lambertian::scatter(const Ray &ray_in, const HitRecord &rec, ScatterRecord 
     srec.scattered_ray = Ray(rec.p, ray_direction);
     srec.attenuation = albedo;
     srec.emitted = light_color;
+}
+
+double Lambertian::scattering_pdf(const Ray &ray_in, const HitRecord &rec, const Ray &scattered) const
+{
+    auto cosine = rec.normal.dot(scattered.get_direction());
+
+    if (cosine < 0)
+    {
+        cosine = 0;
+    }
+
+    return cosine / M_PI;
+}
+
+Direction Metal::reflect(const Direction &v, const Direction &n)
+{
+    return v - n * v.dot(n) * 2;
 }
 
 void Metal::scatter(const Ray &ray_in, const HitRecord &rec, ScatterRecord &srec) const

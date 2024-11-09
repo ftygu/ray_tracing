@@ -58,6 +58,10 @@ public:
 
     inline const Direction cross(const Direction &d) const;
 
+    inline const Direction operator+() const;
+
+    inline const Direction operator-() const;
+
     inline const Direction operator+(const Direction &d) const;
 
     inline const Direction operator-(const Direction &d) const;
@@ -69,6 +73,8 @@ public:
     inline const Direction operator*(double t) const;
 
     inline const Direction operator/(double t) const;
+
+    inline const Direction rotate(const Direction &axis, double angle) const;
 };
 
 class Color
@@ -186,6 +192,16 @@ public:
         return Direction(cross_vector);
     }
 
+    inline const Direction Direction::operator+() const
+    {
+        return *this;
+    }
+
+    inline const Direction Direction::operator-() const
+    {
+        return Direction(-vector);
+    }
+
     inline const Direction Direction::operator+(const Direction &d) const
     {
         return Direction(vector + d.vector);
@@ -214,6 +230,27 @@ public:
     inline const Direction Direction::operator/(double t) const
     {
         return Direction(vector / t);
+    }
+
+    inline const Direction Direction::rotate(const Direction &axis, double angle) const
+    {
+        double c = cos(angle);
+        double s = sin(angle);
+        double t = 1 - c;
+
+        double x = vector.x();
+        double y = vector.y();
+        double z = vector.z();
+
+        double a = axis.x();
+        double b = axis.y();
+        double c1 = axis.z();
+
+        double x_rot = (t * a * a + c) * x + (t * a * b - s * c1) * y + (t * a * c1 + s * b) * z;
+        double y_rot = (t * a * b + s * c1) * x + (t * b * b + c) * y + (t * b * c1 - s * a) * z;
+        double z_rot = (t * a * c1 - s * b) * x + (t * b * c1 + s * a) * y + (t * c1 * c1 + c) * z;
+
+        return Direction(x_rot, y_rot, z_rot);
     }
 
 // Color Part
@@ -245,6 +282,13 @@ public:
         int ir = gamma_correct(r());
         int ig = gamma_correct(g());
         int ib = gamma_correct(b());
+
+        if (ir > 255) ir = 255;
+        if (ig > 255) ig = 255;
+        if (ib > 255) ib = 255;
+        if (ir < 0) ir = 0;
+        if (ig < 0) ig = 0;
+        if (ib < 0) ib = 0;
         
         out << ir << ' ' << ig << ' ' << ib << '\n';
     }

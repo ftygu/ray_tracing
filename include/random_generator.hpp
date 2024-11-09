@@ -22,6 +22,8 @@ public:
     Point sample_point_square(Point center, double side_length, Coordinate fixed_coordinate);
 
     Point sample_point_sphere(Point center, double radius);
+
+    Direction sample_direction_sphere();
 private:
     std::random_device rd;
     std::mt19937 gen;

@@ -47,3 +47,18 @@ Point RandomGenerator::sample_point_sphere(Point center, double radius)
 
     return Point(x, y, z);
 }
+
+Direction RandomGenerator::sample_direction_sphere()
+{
+    std::uniform_real_distribution<> dis(0, 2 * M_PI);
+    double theta = dis(gen);
+
+    dis = std::uniform_real_distribution<>(0, M_PI);
+    double phi = dis(gen);
+
+    double x = sin(phi) * cos(theta);
+    double y = sin(phi) * sin(theta);
+    double z = cos(phi);
+
+    return Direction(x, y, z);
+}

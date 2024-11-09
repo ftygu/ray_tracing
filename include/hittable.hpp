@@ -2,6 +2,7 @@
 
 #include "basic_types.hpp"
 #include "aabb.hpp"
+#include "pdf.h"
 #include "ray.hpp"
 
 #include <memory>
@@ -14,6 +15,7 @@ public:
     Direction normal;
     double t;
     std::shared_ptr<Material> material;
+    std::shared_ptr<PDF> pdf;
 };
 
 class Hittable {

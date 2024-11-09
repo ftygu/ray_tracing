@@ -186,35 +186,28 @@ int main(int argc, char* argv[]) {
     SDL_Init(SDL_INIT_VIDEO);
     atexit(SDL_Quit);
 
-    std::vector<std::shared_ptr<Hittable>> objects;
-
-    objects = generate_random_scene();
-
-    
-
-    objl::Loader loader;
-    loader.LoadFile("../models/bunny/bunny.obj");
-    auto mesh = loader.LoadedMeshes[0];
-    for (size_t i = 0; i < mesh.Indices.size(); i += 3) {
-        //auto v0 = Point(mesh.Vertices[mesh.Indices[i]].Position.X, mesh.Vertices[mesh.Indices[i]].Position.Y, mesh.Vertices[mesh.Indices[i]].Position.Z);
-        //auto v1 = Point(mesh.Vertices[mesh.Indices[i + 1]].Position.X, mesh.Vertices[mesh.Indices[i + 1]].Position.Y, mesh.Vertices[mesh.Indices[i + 1]].Position.Z);
-        //auto v2 = Point(mesh.Vertices[mesh.Indices[i + 2]].Position.X, mesh.Vertices[mesh.Indices[i + 2]].Position.Y, mesh.Vertices[mesh.Indices[i + 2]].Position.Z);
-        //auto triangle = std::make_shared<Triangle>(v0, v1, v2, blue_material);
-        //objects.push_back(triangle);
-    }
-
-    auto world = std::make_shared<BVH>(objects, 0, objects.size());
+    auto floor_material = std::make_shared<Lambertian>(Color(125, 125, 125));
+    auto light_material = std::make_shared<Lambertian>(Color(255, 255, 255));
+    light_material->set_light_color(Color(10000, 10000, 10000));
 
 
-    Camera camera(16.0 / 9.0, 520);
+    auto floor = std::make_shared<Sphere>(Point(0, -1000, 0), 1000, floor_material);
+    auto sphere1 = std::make_shared<Sphere>(Point(1, 1, -2), 1, std::make_shared<Lambertian>(Color(255, 0, 0)));
+    auto sphere2 = std::make_shared<Sphere>(Point(-1, 1, -2), 1, std::make_shared<Lambertian>(Color(0, 255, 0)));
+
+    auto sphere3 = std::make_shared<Sphere>(Point(0, 3, -2), 0.1, light_material);
+
+    auto world = std::make_shared<HittableList>();
+    world->add(floor);
+    world->add(sphere1);
+    world->add(sphere2);
+    world->add(sphere3);
+
+
+    Camera camera(16.0 / 9.0, 800);
     camera.set_world(world);
-    //camera.render();
 
-    double start_time_parallel = SDL_GetTicks();
-    camera.render_parallel();
-    double end_time_parallel = SDL_GetTicks();
-    std::clog << "并行渲染时间: " << end_time_parallel - start_time_parallel << "ms\n";
-
+    camera.render_parallel_pdf();
     std::stringstream ss;
     camera.write_image(ss);
 
@@ -284,7 +277,8 @@ int main(int argc, char* argv[]) {
 
 
         if (camera_moved) {
-            camera.render_parallel();
+            //camera.render_parallel();
+            camera.render_parallel_pdf();
             ss.str("");
             ss.clear();
             camera.write_image(ss);

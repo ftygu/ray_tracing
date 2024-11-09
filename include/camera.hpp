@@ -1,6 +1,7 @@
 #pragma once
 
 #include "basic_types.hpp"
+#include "pdf.h"
 #include "ray.hpp"
 #include "hittable.hpp"
 #include "hittable_list.hpp"
@@ -44,12 +45,15 @@ private:
 
     Image image;
 
-    int samples_per_pixel = 5;
-    int max_depth = 25;
+    int samples_per_pixel = 10;
+    int max_depth = 5;
 
     RandomGenerator random_generator;
 
     std::shared_ptr<Hittable> world;
+
+    //temp for testing
+    Point light_position = Point(0, 3, -2);
 public:
 
     Camera(double aspect_ratio, int image_width);
@@ -72,7 +76,11 @@ public:
 
     void render_parallel();
 
+    void render_parallel_pdf();
+
     Color ray_color(const Ray &ray, int depth, const Hittable &world);
+
+    Color ray_color_pdf(const Ray &ray, int depth, const Hittable &world);
 
     void write_image(std::ostream &out) const;
 };

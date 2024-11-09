@@ -1,7 +1,9 @@
 #include "camera.hpp"
+#include "basic_types.hpp"
 #include "hittable.hpp"
 #include "hittable_list.hpp"
 #include "material.hpp"
+#include "pdf.h"
 #include "random_generator.hpp"
 #include "sphere.hpp"
 #include "triangle.hpp"
@@ -174,7 +176,70 @@ Color Camera::ray_color(const Ray &ray, int depth, const Hittable &world)
         rec.material->scatter(ray, rec, srec);
         return srec.attenuation * ray_color(srec.scattered_ray, depth - 1, world) / Color(255,255,255) + srec.emitted;
     } else {
-        Color background = Color(125, 125, 255);
+        Color background = Color(0, 0, 0);
+        return background;
+    }
+}
+
+void Camera::render_parallel_pdf()
+{
+    // Use all available CPU threads
+    int num_threads = omp_get_max_threads();
+    omp_set_num_threads(num_threads);
+
+    for (int j = 0; j < image_height; ++j)
+    {
+        #pragma omp parallel for schedule(guided)
+        for (int i = 0; i < image_width; ++i)
+        {
+            auto p = pixel00_center + pixel_delta_u * i + pixel_delta_v * j;
+            Color pixel_color(0, 0, 0);
+
+            for (int s = 0; s < samples_per_pixel; ++s)
+            {
+                auto random_point = random_generator.sample_point_square(p, 0.01, RandomGenerator::Z);
+                Direction direction = Direction(random_point - center).unit();
+                Ray ray(center, direction);
+                pixel_color = pixel_color + ray_color_pdf(ray, max_depth, *world);
+            }
+
+            pixel_color = pixel_color / samples_per_pixel;
+            image.set_pixel(i, j, pixel_color);
+        }
+
+        std::clog << "Scanlines remaining: " << image_height - j << '\n';
+    }
+}
+
+Color Camera::ray_color_pdf(const Ray &ray, int depth, const Hittable &world)
+{
+    if (depth <= 0)
+    {
+        return Color(0, 0, 0);
+    }
+
+    HitRecord rec;
+
+    if (world.hit(ray, 0.001, 1000, rec))
+    {
+        auto srec = ScatterRecord();
+        rec.material->scatter(ray, rec, srec);
+
+        auto sphere_pdf = std::make_shared<SpherePDF>();
+        auto direction_to_light = Direction(light_position - rec.p).unit();
+        auto cosine_pdf = std::make_shared<CosinePDF>(direction_to_light,2000);
+        auto mixture_pdf = std::make_shared<MixturePDF>(sphere_pdf, 0.1, cosine_pdf, 0.9);
+        auto scattered_direction = mixture_pdf->generate();
+        Ray scattered_ray(rec.p, scattered_direction);
+        
+        double pdf_value = mixture_pdf->value(scattered_direction);
+        double scattering_pdf = rec.material->scattering_pdf(ray, rec, scattered_ray);
+
+        Color sample_color = ray_color_pdf(scattered_ray, depth - 1, world);
+        Color result = srec.attenuation * sample_color / Color(255, 255, 255) * scattering_pdf / pdf_value + srec.emitted;
+        return result;
+    } else {
+        Color background = Color(0, 0, 0);
         return background;
     }
 }

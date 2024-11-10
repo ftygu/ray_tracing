@@ -280,8 +280,11 @@ Color Camera::ray_color_pdf(const Ray &ray, int depth, const Hittable &world)
 
         //这里存在神秘的浮点误差
         //比方说我们生成了光源边缘的点，再计算pdf时，虽然这点在光源上，但是pdf值可能为0
+        //发生概率大概在千分之二左右
+        //但是在1080p * 1920 * 100次采样中，这种情况就是大概率发生的
         //求交时的误差可能导致这种情况
         while (pdf_value == 0) {
+            //直到生成的光线的pdf不为0
             scattered_direction = mixture_pdf.generate(random_generator);
             scattered_ray = Ray(rec.p, scattered_direction);
             pdf_value = mixture_pdf.value(scattered_direction);

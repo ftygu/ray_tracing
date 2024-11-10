@@ -1,12 +1,12 @@
 1. 实现基础的路径追踪 finish
 
-2. 实现动态模糊 no need
+2. 实现动态模糊 never
 
 3. 实现BVH加速 finish
 
-4. 实现纹理映射 i will do it when i want
+4. 实现纹理映射 tomorrow
 
-5. 实现柏林噪声 i will do it when i want
+5. 实现柏林噪声 tomorrow
 
 6. 实现多边形 finish
 
@@ -14,7 +14,7 @@
 
 8. 实现相机的运动 finish
 
-9. 实现体积渲染 maybe no need
+9. 实现体积渲染 when i want
 
 10. 实现PDF采样 finish
 
@@ -22,8 +22,8 @@
 
 12. 实现光子映射 finish
 
-13. 实现 environment map 光源 
+13. 实现 environment map 光源  when i want
 
-14. 支持环形 no need
+14. 支持环形 never
 
-15. 辐射度量 no need
+15. 辐射度量 never

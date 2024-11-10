@@ -50,6 +50,7 @@ AABB Sphere::bounding_box() const
 double Sphere::pdf_value(const Point &o, const Direction &v) const
 {
     HitRecord rec;
+
     if (!this->hit(Ray(o, v), 0.001, std::numeric_limits<double>::infinity(), rec))
     {
         return 0;

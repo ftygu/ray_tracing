@@ -75,15 +75,22 @@ double Triangle::pdf_value(const Point &o, const Direction &v) const
 
     auto edge1 = v1 - v0;
     auto edge2 = v2 - v0;
-    auto normal = edge1.cross(edge2).unit();
 
-    return 1 / normal.length();
+    double area = 0.5 * edge1.cross(edge2).length();
+
+    return 1.0 / area;
 }
 
 Point Triangle::random(RandomGenerator &random_generator) const
 {
-    auto r1 = random_generator.get_random_double(0, 1);
-    auto r2 = random_generator.get_random_double(0, 1);
+    double r1 = random_generator.get_random_double(0, 1);
+    double r2 = random_generator.get_random_double(0, 1);
+
+    if (r1 + r2 > 1.0)
+    {
+        r1 = 1.0 - r1;
+        r2 = 1.0 - r2;
+    }
 
     auto edge1 = v1 - v0;
     auto edge2 = v2 - v0;

@@ -299,18 +299,21 @@ std::tuple<std::vector<std::shared_ptr<Hittable>>, std::vector<std::shared_ptr<H
     auto sphere1 = std::make_shared<Sphere>(Point(1, 1, -2), 1, std::make_shared<Lambertian>(Color(200, 0, 0)));
     auto sphere2 = std::make_shared<Sphere>(Point(-1, 1, -2), 1, std::make_shared<Lambertian>(Color(0, 200, 0)));
     auto sphere3 = std::make_shared<Sphere>(Point(0, 3, -2), 0.1, light_material);
-    auto sphere4 = std::make_shared<Sphere>(Point(2, 3, -2), 0.2, light_material);
+    auto point1 = Point(1.75, 2.25, -3);
+    auto point2 = Point(1.75, 2, -3);
+    auto point3 = Point(2, 2, -3);
+    auto triangle = std::make_shared<Triangle>(point1, point2, point3, light_material);
 
     std::vector<std::shared_ptr<Hittable>> objects;
     objects.push_back(floor);
     objects.push_back(sphere1);
     objects.push_back(sphere2);
     objects.push_back(sphere3);
-    objects.push_back(sphere4);
+    objects.push_back(triangle);
 
     std::vector<std::shared_ptr<Hittable>> lights;
     lights.push_back(sphere3);
-    lights.push_back(sphere4);
+    lights.push_back(triangle);
 
     return {objects, lights};
 }

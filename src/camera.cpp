@@ -4,9 +4,11 @@
 #include "hittable_list.hpp"
 #include "material.hpp"
 #include "pdf.h"
+#include "photo_map.hpp"
 #include "random_generator.hpp"
 #include "sphere.hpp"
 #include "triangle.hpp"
+#include <cstddef>
 #include <iostream>
 #include <omp.h>
 
@@ -243,6 +245,72 @@ Color Camera::ray_color_pdf(const Ray &ray, int depth, const Hittable &world)
         return background;
     }
 }
+
+void Camera::render_photons(Photomap &photomap) {
+    // Use all available CPU threads
+    int num_threads = omp_get_max_threads();
+    omp_set_num_threads(num_threads);
+
+    for (int j = 0; j < image_height; ++j)
+    {
+        #pragma omp parallel for schedule(guided)
+        for (int i = 0; i < image_width; ++i)
+        {
+            auto p = pixel00_center + pixel_delta_u * i + pixel_delta_v * j;
+            Color pixel_color(0, 0, 0);
+
+            for (int s = 0; s < samples_per_pixel; ++s)
+            {
+                auto random_point = random_generator.sample_point_square(p, 0.01, RandomGenerator::Z);
+                Direction direction = Direction(random_point - center).unit();
+                Ray ray(center, direction);
+                pixel_color = pixel_color + ray_color_photons(ray, max_depth, *world, photomap);
+            }
+
+            pixel_color = pixel_color / samples_per_pixel;
+            image.set_pixel(i, j, pixel_color);
+        }
+
+        std::clog << "Scanlines remaining: " << image_height - j << '\n';
+    }
+}
+
+
+Color Camera::ray_color_photons(const Ray &ray, int depth, const Hittable &world, Photomap &photomap) {
+    if (depth <= 0) {
+        return Color(0, 0, 0);
+    }
+
+    HitRecord rec;
+    if (world.hit(ray, 0.001, 1000, rec)) {
+        ScatterRecord srec;
+        rec.material->scatter(ray, rec, srec);
+
+        int num_photons = 100;
+        std::vector<Photon> nearby_photons = photomap.get_nearby_photons(rec.p, num_photons);
+
+        auto radius = (nearby_photons.back().position - rec.p).length();
+
+
+        Color indirect_illumination = Color(0, 0, 0);
+        for (const Photon& photon : nearby_photons) {
+            Direction photon_incoming_direction = -photon.direction;
+            double cosine = rec.normal.dot(photon_incoming_direction);
+            if (cosine > 0) {
+                indirect_illumination = indirect_illumination + photon.power * cosine / 10000000;
+            }
+        }
+
+        indirect_illumination = indirect_illumination / (M_PI * radius * radius);
+
+        Color direct_illumination = srec.emitted;
+
+        return direct_illumination + srec.attenuation * indirect_illumination;
+    } else {
+        return Color(25, 25, 25);
+    }
+}
+
 
 
 void Camera::write_image(std::ostream &out) const

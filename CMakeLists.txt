@@ -34,6 +34,7 @@ add_executable(ray_tracer
     src/hittable_list.cpp
     src/random_generator.cpp
     src/material.cpp
+    src/photo_map.cpp
 )
 
 # 链接 SDL2 库

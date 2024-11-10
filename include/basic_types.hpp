@@ -21,6 +21,8 @@ public:
 
     inline const Vector3d get_vector() const;
 
+    inline double operator[](int i) const;
+
     inline const Point operator+(const Direction &d) const;
 
     inline const Point operator-(const Direction &d) const;
@@ -126,6 +128,11 @@ public:
     inline const Vector3d Point::get_vector() const
     {
         return vector;
+    }
+
+    inline double Point::operator[](int i) const
+    {
+        return vector[i];
     }
 
     inline const Point Point::operator+(const Direction &d) const

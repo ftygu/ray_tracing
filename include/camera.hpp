@@ -2,6 +2,7 @@
 
 #include "basic_types.hpp"
 #include "pdf.h"
+#include "photo_map.hpp"
 #include "ray.hpp"
 #include "hittable.hpp"
 #include "hittable_list.hpp"
@@ -78,9 +79,13 @@ public:
 
     void render_parallel_pdf();
 
+    void render_photons(Photomap &photomap);
+
     Color ray_color(const Ray &ray, int depth, const Hittable &world);
 
     Color ray_color_pdf(const Ray &ray, int depth, const Hittable &world);
+
+    Color ray_color_photons(const Ray &ray, int depth, const Hittable &world, Photomap &photomap);
 
     void write_image(std::ostream &out) const;
 };

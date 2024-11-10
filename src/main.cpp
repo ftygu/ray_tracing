@@ -20,6 +20,7 @@
 #include "triangle.hpp"
 #include "obj_loader.hpp"
 #include "basic_types.hpp"
+#include "photo_map.hpp"
 
 // 全局变量用于事件处理
 std::mutex event_mutex;
@@ -186,14 +187,14 @@ int main(int argc, char* argv[]) {
     SDL_Init(SDL_INIT_VIDEO);
     atexit(SDL_Quit);
 
-    auto floor_material = std::make_shared<Lambertian>(Color(125, 125, 125));
+    auto floor_material = std::make_shared<Lambertian>(Color(25, 25, 25));
     auto light_material = std::make_shared<Lambertian>(Color(255, 255, 255));
     light_material->set_light_color(Color(10000, 10000, 10000));
 
 
     auto floor = std::make_shared<Sphere>(Point(0, -1000, 0), 1000, floor_material);
-    auto sphere1 = std::make_shared<Sphere>(Point(1, 1, -2), 1, std::make_shared<Lambertian>(Color(255, 0, 0)));
-    auto sphere2 = std::make_shared<Sphere>(Point(-1, 1, -2), 1, std::make_shared<Lambertian>(Color(0, 255, 0)));
+    auto sphere1 = std::make_shared<Sphere>(Point(1, 1, -2), 1, std::make_shared<Lambertian>(Color(200, 0, 0)));
+    auto sphere2 = std::make_shared<Sphere>(Point(-1, 1, -2), 1, std::make_shared<Lambertian>(Color(0, 200, 0)));
 
     auto sphere3 = std::make_shared<Sphere>(Point(0, 3, -2), 0.1, light_material);
 
@@ -201,13 +202,17 @@ int main(int argc, char* argv[]) {
     world->add(floor);
     world->add(sphere1);
     world->add(sphere2);
-    world->add(sphere3);
+    //world->add(sphere3);
 
+    Photomap photomap;
+
+    photomap.build_map(*world, *sphere3, 10000000);
 
     Camera camera(16.0 / 9.0, 800);
     camera.set_world(world);
 
-    camera.render_parallel_pdf();
+    //camera.render_parallel_pdf();
+    camera.render_photons(photomap);
     std::stringstream ss;
     camera.write_image(ss);
 
@@ -278,7 +283,8 @@ int main(int argc, char* argv[]) {
 
         if (camera_moved) {
             //camera.render_parallel();
-            camera.render_parallel_pdf();
+            //camera.render_parallel_pdf();
+            camera.render_photons(photomap);
             ss.str("");
             ss.clear();
             camera.write_image(ss);

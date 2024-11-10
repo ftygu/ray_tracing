@@ -4,29 +4,33 @@
 #include "random_generator.hpp"
 
 #include <cassert>
+#include <cstdlib>
 #include <memory>
+#include <vector>
+
+#include "hittable.hpp"
 
 class PDF
 {
 public:
     virtual ~PDF() = default;
     virtual double value(const Direction &direction) const = 0;
-    virtual Direction generate() = 0;
+    virtual Direction generate(RandomGenerator &random_generator) = 0;
 };
 
 class SpherePDF : public PDF
 {
 private:
-    RandomGenerator random_generator;
+    static constexpr double INV_4PI = 1.0 / (4.0 * M_PI);
 public:
     SpherePDF() = default;
 
     double value(const Direction &direction) const override
     {
-        return 1.0 / (4.0 * M_PI);
+        return INV_4PI;
     }
 
-    Direction generate() override
+    Direction generate(RandomGenerator &random_generator) override
     {
         return random_generator.sample_direction_sphere();
     }
@@ -38,7 +42,6 @@ class CosinePDF : public PDF
 private:
     Direction normal;
     double exponent;
-    RandomGenerator random_generator;
 
 public:
     explicit CosinePDF(const Direction& n, double exp = 1.0)
@@ -51,7 +54,7 @@ public:
         return (exponent + 1) * std::pow(cosine, exponent) / (2 * M_PI);
     }
 
-    Direction generate() override
+    Direction generate(RandomGenerator &random_generator) override
     {
         double r1 = random_generator.get_random_double(0, 1);
         double r2 = random_generator.get_random_double(0, 1);
@@ -75,38 +78,64 @@ public:
     }
 };
 
-class MixturePDF : public PDF
+class HittablePDF : public PDF
 {
 private:
-    std::shared_ptr<PDF> pdf1;
-    std::shared_ptr<PDF> pdf2;
-    double weight1;
-    double weight2;
-    RandomGenerator random_generator;
+    Point origin;
+    std::shared_ptr<Hittable> object;
 
 public:
 
-    MixturePDF(std::shared_ptr<PDF> p1, double weight1, std::shared_ptr<PDF> p2, double weight2)
-        : pdf1(p1), pdf2(p2), weight1(weight1), weight2(weight2)
+    HittablePDF(const Point &origin, std::shared_ptr<Hittable> object)
+        : origin(origin), object(object) {}
+
+    double value(const Direction &direction) const override
     {
-        assert(weight1 + weight2 == 1);
+        return object->pdf_value(origin, direction);
+    }
+
+    Direction generate(RandomGenerator &random_generator) override
+    {
+        return object->random(random_generator) - origin;
+    }
+
+};
+
+class MixturePDF : public PDF
+{
+private:
+
+    std::vector<PDF*> pdfs;
+
+    std::vector<double> weights;
+
+public:
+
+    MixturePDF(std::vector<PDF*> pdfs, std::vector<double> weights)
+        : pdfs(pdfs), weights(weights)
+    {
+        assert(pdfs.size() == weights.size());
     }
 
     double value(const Direction &direction) const override
     {
-        return weight1 * pdf1->value(direction) + weight2 * pdf2->value(direction);
+        double sum = 0;
+        for (int i = 0; i < pdfs.size(); ++i) {
+            sum += weights[i] * pdfs[i]->value(direction);
+        }
+        return sum;
     }
 
-    Direction generate() override
+    Direction generate(RandomGenerator &random_generator) override
     {
-        if (random_generator.get_random_double(0, 1) < weight1)
-        {
-            return pdf1->generate();
+        double r = random_generator.get_random_double(0, 1);
+        double sum = 0;
+        for (int i = 0; i < pdfs.size(); ++i) {
+            sum += weights[i];
+            if (r < sum) {
+                return pdfs[i]->generate(random_generator);
+            }
         }
-        else
-        {
-            return pdf2->generate();
-        }
+        return pdfs.back()->generate(random_generator);
     }
-
 };

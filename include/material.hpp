@@ -21,10 +21,13 @@ protected:
     Color light_color;
 public:
     virtual void scatter(const Ray &ray_in, const HitRecord &rec, ScatterRecord &srec) const = 0;
+
+    //负责重要性采样时的pdf计算
     virtual double scattering_pdf(const Ray &ray_in, const HitRecord &rec, const Ray &scattered) const
     {
         return 0;
     }
+    
     void set_light_color(const Color &light_color);
 };
 

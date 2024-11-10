@@ -44,14 +44,11 @@ void Metal::scatter(const Ray &ray_in, const HitRecord &rec, ScatterRecord &srec
     srec.emitted = light_color;
 }
 
-
-// Reflects a vector off a surface with a given normal
 Direction Dielectric::reflect(const Direction& v, const Direction& n)
 {
     return v - n * v.dot(n) * 2;
 }
 
-// Refracts a vector through a surface with a given normal and refractive index ratio
 bool Dielectric::refract(const Direction& v, const Direction& n, double ni_over_nt, Direction& refracted)
 {
     Direction uv = v.unit();
@@ -90,14 +87,12 @@ void Dielectric::scatter(const Ray &ray_in, const HitRecord &rec, ScatterRecord 
 
     if (ray_in.get_direction().dot(rec.normal) > 0)
     {
-        // Ray is inside the material
         outward_normal = Direction(0, 0, 0) - rec.normal;
         ni_over_nt = refraction_index;
         cosine = refraction_index * ray_in.get_direction().dot(rec.normal) / ray_in.get_direction().length();
     }
     else
     {
-        // Ray is outside the material
         outward_normal = rec.normal;
         ni_over_nt = 1.0 / refraction_index;
         cosine = -ray_in.get_direction().dot(rec.normal) / ray_in.get_direction().length();
@@ -105,12 +100,10 @@ void Dielectric::scatter(const Ray &ray_in, const HitRecord &rec, ScatterRecord 
 
     if (refract(ray_in.get_direction(), outward_normal, ni_over_nt, refracted))
     {
-        // Calculate reflection probability using Schlick's approximation
         reflect_prob = schlick(cosine, refraction_index);
     }
     else
     {
-        // Total internal reflection
         reflect_prob = 1.0;
     }
 

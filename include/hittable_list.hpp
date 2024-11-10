@@ -15,6 +15,8 @@ public:
 
     HittableList() = default;
 
+    HittableList(std::vector<std::shared_ptr<Hittable>> objects) : objects(objects) {}
+
     void add(std::shared_ptr<Hittable> object);
 
     bool hit(const Ray &ray, double t_min, double t_max, HitRecord &rec) const override;

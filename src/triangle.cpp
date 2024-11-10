@@ -64,3 +64,29 @@ AABB Triangle::bounding_box() const
 
     return AABB(Point(min_x, min_y, min_z), Point(max_x, max_y, max_z));
 }
+
+double Triangle::pdf_value(const Point &o, const Direction &v) const
+{
+    HitRecord rec;
+    if (!this->hit(Ray(o, v), 0.001, std::numeric_limits<double>::infinity(), rec))
+    {
+        return 0;
+    }
+
+    auto edge1 = v1 - v0;
+    auto edge2 = v2 - v0;
+    auto normal = edge1.cross(edge2).unit();
+
+    return 1 / normal.length();
+}
+
+Point Triangle::random(RandomGenerator &random_generator) const
+{
+    auto r1 = random_generator.get_random_double(0, 1);
+    auto r2 = random_generator.get_random_double(0, 1);
+
+    auto edge1 = v1 - v0;
+    auto edge2 = v2 - v0;
+
+    return v0 + edge1 * r1 + edge2 * r2;
+}

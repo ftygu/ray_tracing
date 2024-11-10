@@ -1,6 +1,7 @@
 #include "hittable.hpp"
 #include "material.hpp"
 #include "basic_types.hpp"
+#include "random_generator.hpp"
 #include <memory>
 
 class Sphere : public Hittable
@@ -25,4 +26,8 @@ public:
     {
         return radius;
     }
+
+    double pdf_value(const Point &o, const Direction &v) const override;
+
+    Point random(RandomGenerator &random_generator) const override;
 };

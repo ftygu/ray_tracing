@@ -28,7 +28,6 @@ add_executable(ray_tracer
     src/image.cpp 
     src/ray.cpp 
     src/camera.cpp 
-    src/hittable.cpp 
     src/sphere.cpp
     src/triangle.cpp
     src/hittable_list.cpp

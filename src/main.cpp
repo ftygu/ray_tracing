@@ -1,6 +1,7 @@
 #include <SDL2/SDL.h>
 #include <SDL2/SDL_keycode.h>
 #include <memory>
+#include <tuple>
 #include <vector>
 #include <string>
 #include <sstream>
@@ -27,7 +28,115 @@ std::mutex event_mutex;
 std::queue<char> key_events;
 bool is_running = true;
 
-// 处理 SDL 事件的函数
+void handle_events();
+
+char get_key_event();
+
+bool spheres_overlap(const std::shared_ptr<Sphere>& sphere1, const std::shared_ptr<Sphere>& sphere2);
+
+std::vector<std::shared_ptr<Hittable>> generate_random_scene();
+
+std::tuple<std::vector<std::shared_ptr<Hittable>>, std::vector<std::shared_ptr<Hittable>>> generate_test_scene();
+
+int main(int argc, char* argv[]) {
+
+    //handle command line arguments
+    std::vector<std::string> args(argv, argv + argc);
+
+    //initialize SDL
+    SDL_Init(SDL_INIT_VIDEO);
+    atexit(SDL_Quit);
+
+    //generate test scene
+    auto [objects, lights] = generate_test_scene();
+    auto world = std::make_shared<HittableList>(objects);
+
+    //set up camera
+    Camera camera(16.0 / 9.0, 800, 30, 5);
+    camera.set_world(world, lights);
+    camera.set_algorithm(Algorithm::PathTracingPDF);
+
+    //generate the first image
+    camera.render();
+    std::stringstream ss;
+    camera.write_image(ss);
+
+    //display the image
+    PPMWindow window;
+    window.display_image(ss.str());
+
+    //main loop
+    while (is_running && window.running()) {
+
+        handle_events();
+        char key = get_key_event();
+        bool camera_moved = false;
+
+        switch (toupper(key)) {
+            case 'W':
+                camera.translate(0.3, 0, 0);
+                camera_moved = true;
+                break;
+            case 'S':
+                camera.translate(-0.3, 0, 0);
+                camera_moved = true;
+                break;
+            case 'A':
+                camera.translate(0, -0.3, 0);
+                camera_moved = true;
+                break;
+            case 'D':
+                camera.translate(0, 0.3, 0);
+                camera_moved = true;
+                break;
+            case 'Q':
+                camera.translate(0, 0, 0.3);
+                camera_moved = true;
+                break;
+            case 'E':
+                camera.translate(0, 0, -0.3);
+                camera_moved = true;
+                break;
+            case 'I':
+                camera.rotate(0, 0.1, 0);
+                camera_moved = true;
+                break;
+            case 'K':
+                camera.rotate(0, -0.1, 0);
+                camera_moved = true;
+                break;
+            case 'J':
+                camera.rotate(0.1, 0, 0);
+                camera_moved = true;
+                break;
+            case 'L':
+                camera.rotate(-0.1, 0, 0);
+                camera_moved = true;
+                break;
+            case 'U':
+                camera.rotate(0, 0, -0.1);
+                camera_moved = true;
+                break;
+            case 'O':
+                camera.rotate(0, 0, 0.1);
+                camera_moved = true;
+                break;
+            default:
+                break;
+        }
+
+        if (camera_moved) {
+            camera.render_parallel();
+            ss.str("");
+            ss.clear();
+            camera.write_image(ss);
+            window.display_image(ss.str());
+        }
+        SDL_Delay(10);
+    }
+    return 0;
+}
+
 void handle_events() {
     SDL_Event e;
     while (SDL_PollEvent(&e)) {
@@ -181,117 +290,27 @@ std::vector<std::shared_ptr<Hittable>> generate_random_scene() {
     return objects;
 }
 
-int main(int argc, char* argv[]) {
-    std::vector<std::string> args(argv, argv + argc);
-
-    SDL_Init(SDL_INIT_VIDEO);
-    atexit(SDL_Quit);
-
-    auto floor_material = std::make_shared<Lambertian>(Color(25, 25, 25));
+std::tuple<std::vector<std::shared_ptr<Hittable>>, std::vector<std::shared_ptr<Hittable>>> generate_test_scene() {
+    auto floor_material = std::make_shared<Lambertian>(Color(125, 125, 125));
     auto light_material = std::make_shared<Lambertian>(Color(255, 255, 255));
     light_material->set_light_color(Color(10000, 10000, 10000));
-
 
     auto floor = std::make_shared<Sphere>(Point(0, -1000, 0), 1000, floor_material);
     auto sphere1 = std::make_shared<Sphere>(Point(1, 1, -2), 1, std::make_shared<Lambertian>(Color(200, 0, 0)));
     auto sphere2 = std::make_shared<Sphere>(Point(-1, 1, -2), 1, std::make_shared<Lambertian>(Color(0, 200, 0)));
-
     auto sphere3 = std::make_shared<Sphere>(Point(0, 3, -2), 0.1, light_material);
+    auto sphere4 = std::make_shared<Sphere>(Point(2, 3, -2), 0.2, light_material);
 
-    auto world = std::make_shared<HittableList>();
-    world->add(floor);
-    world->add(sphere1);
-    world->add(sphere2);
-    //world->add(sphere3);
+    std::vector<std::shared_ptr<Hittable>> objects;
+    objects.push_back(floor);
+    objects.push_back(sphere1);
+    objects.push_back(sphere2);
+    objects.push_back(sphere3);
+    objects.push_back(sphere4);
 
-    Photomap photomap;
+    std::vector<std::shared_ptr<Hittable>> lights;
+    lights.push_back(sphere3);
+    lights.push_back(sphere4);
 
-    photomap.build_map(*world, *sphere3, 10000000);
-
-    Camera camera(16.0 / 9.0, 800);
-    camera.set_world(world);
-
-    //camera.render_parallel_pdf();
-    camera.render_photons(photomap);
-    std::stringstream ss;
-    camera.write_image(ss);
-
-    PPMWindow window;
-    window.display_image(ss.str());
-
-    while (is_running && window.running()) {
-
-        handle_events();
-
-        char key = get_key_event();
-        bool camera_moved = false;
-
-
-        switch (toupper(key)) {
-            case 'W':
-                camera.translate(0.3, 0, 0);
-                camera_moved = true;
-                break;
-            case 'S':
-                camera.translate(-0.3, 0, 0);
-                camera_moved = true;
-                break;
-            case 'A':
-                camera.translate(0, -0.3, 0);
-                camera_moved = true;
-                break;
-            case 'D':
-                camera.translate(0, 0.3, 0);
-                camera_moved = true;
-                break;
-            case 'Q':
-                camera.translate(0, 0, 0.3);
-                camera_moved = true;
-                break;
-            case 'E':
-                camera.translate(0, 0, -0.3);
-                camera_moved = true;
-                break;
-            case 'I':
-                camera.rotate(0, 0.1, 0);
-                camera_moved = true;
-                break;
-            case 'K':
-                camera.rotate(0, -0.1, 0);
-                camera_moved = true;
-                break;
-            case 'J':
-                camera.rotate(0.1, 0, 0);
-                camera_moved = true;
-                break;
-            case 'L':
-                camera.rotate(-0.1, 0, 0);
-                camera_moved = true;
-                break;
-            case 'U':
-                camera.rotate(0, 0, -0.1);
-                camera_moved = true;
-                break;
-            case 'O':
-                camera.rotate(0, 0, 0.1);
-                camera_moved = true;
-                break;
-            default:
-                break;
-        }
-
-
-        if (camera_moved) {
-            //camera.render_parallel();
-            //camera.render_parallel_pdf();
-            camera.render_photons(photomap);
-            ss.str("");
-            ss.clear();
-            camera.write_image(ss);
-            window.display_image(ss.str());
-        }
-        SDL_Delay(10);
-    }
-
-    return 0;
+    return {objects, lights};
 }
